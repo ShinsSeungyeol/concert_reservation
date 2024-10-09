@@ -103,7 +103,7 @@
 
 ## 패키지 구조
 
-![img_1.png](img_1.png)
+![package_structure.png](package_structure.png)
 
 1. api : controller 들을 담을 패키지 입니다.
 2. domain : 도메인 레이어 객체들(서비스, JPA entity(=도메인 모델), 도메인 밸류 객체) 을 담을 패키지 입니다. -> 현재 설계 상으로 총 5개의 도메인
@@ -111,5 +111,15 @@
 3. infra : infrastructure-persistence Layer(repository) 의 클래스들을 담을 패키지 입니다.
 4. usecase : service 간의 의존성이 생길 경우, 순환참조가 발생할 수 있으므로, 서비스들의 퍼사드 클래스들을 담을 패키지 입니다.
 
+--- 
+기술 스택
 
+1. **DBMS** : H2
+2. **development** : springboot, jpa, spring-scheduler
+3. **test** : junit5
+4. **in-memory** : Redis
+
+현재 **scheduler** 을 통해 **대기열에 있는 토큰을 일정 수량만큼 active로 바꾼다**거나 예약된 좌석의 경우 5분 동안 결제가 안되면 점유상태를 뺏기게 되는
+정책을
+적용할 예정입니다. 추후 성능상 이슈가 발생할 경우, Redis를 도입할 예정입니다. 
 
