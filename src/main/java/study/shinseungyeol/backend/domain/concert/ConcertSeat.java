@@ -23,8 +23,8 @@ public class ConcertSeat extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(length = 50)
-  private String name;
+  @Column(nullable = false)
+  private Integer number;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Concert concert;
@@ -34,13 +34,13 @@ public class ConcertSeat extends BaseEntity {
   /**
    * 콘서트 좌석 정정 팩토리 함수
    *
-   * @param name
+   * @param number
    * @param concert
    * @return
    */
-  public static ConcertSeat create(String name, Concert concert) {
+  public static ConcertSeat create(Integer number, Concert concert) {
     ConcertSeat seat = new ConcertSeat();
-    seat.setName(name);
+    seat.setNumber(number);
     seat.setConcert(concert);
 
     concert.addSeat(seat);
