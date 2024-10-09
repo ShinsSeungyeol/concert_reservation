@@ -94,10 +94,22 @@
 
 **Redis 및 다른 기술 스택 적합성 검사 및 적용** -> 1.5MD
 
+---
 
+## ER 다이어그램
 
+![er-digram.png](er-digram.png)
+---
 
+## 패키지 구조
 
+![img_1.png](img_1.png)
+
+1. api : controller 들을 담을 패키지 입니다.
+2. domain : 도메인 레이어 객체들(서비스, JPA entity(=도메인 모델), 도메인 밸류 객체) 을 담을 패키지 입니다. -> 현재 설계 상으로 총 5개의 도메인
+   concert, member, point, reservation, token 이 있습니다.
+3. infra : infrastructure-persistence Layer(repository) 의 클래스들을 담을 패키지 입니다.
+4. usecase : service 간의 의존성이 생길 경우, 순환참조가 발생할 수 있으므로, 서비스들의 퍼사드 클래스들을 담을 패키지 입니다.
 
 
 
