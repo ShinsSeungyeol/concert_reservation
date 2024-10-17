@@ -9,7 +9,7 @@ public class ChargingPointDto {
 
   }
 
-  public record ResponseChargingPoint(Long memberId, BigDecimal balanceAmount) {
+  public record ResponseChargingPoint(BigDecimal balanceAmount) {
 
 
   }

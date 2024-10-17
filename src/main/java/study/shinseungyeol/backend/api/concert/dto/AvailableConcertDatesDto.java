@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class AvailableConcertDatesDto {
 
-  public record RequestAvailableConcertDates(UUID token) {
+  public record RequestAvailableConcertDates(UUID token, Long concertId) {
 
   }
 
