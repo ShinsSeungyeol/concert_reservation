@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 import study.shinseungyeol.backend.api.concert.dto.AvailableConcertDatesDto.AvailableConcertDate;
 import study.shinseungyeol.backend.api.concert.dto.AvailableConcertDatesDto.RequestAvailableConcertDates;
 import study.shinseungyeol.backend.api.concert.dto.AvailableConcertDatesDto.ResponseAvailableConcertDates;
-import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatsDto.AvailableConcertSeat;
 import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatsDto.RequestAvailableConcertSeats;
 import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatsDto.ResponseAvailableConcertSeats;
+import study.shinseungyeol.backend.domain.concert.ConcertSchedule;
+import study.shinseungyeol.backend.domain.concert.ConcertSeat;
+import study.shinseungyeol.backend.usecase.concert.ConcertUseCase;
 
 @RestController
 @RequestMapping("/api/v1/concert")
+@RequiredArgsConstructor
 public class ConcertController {
+
+  private final ConcertUseCase concertUseCase;
 
   @GetMapping("/available-dates")
   @Operation(summary = "콘서트 예약 가능 날짜들 조회", description = "현재 기준으로 예약 가능한 콘서트와 날짜 정보를 반환한다.")
@@ -32,9 +37,15 @@ public class ConcertController {
   })
   public ResponseEntity<ResponseAvailableConcertDates> getAvailableConcertDates(
       RequestAvailableConcertDates request) {
-    return ResponseEntity.ok().body(new ResponseAvailableConcertDates(
-        List.of(new AvailableConcertDate(LocalDateTime.now(),
-            LocalDateTime.now().plusDays(1), 1L))));
+
+    List<ConcertSchedule> concertSchedules = concertUseCase.getAvailableConcertSchedules(
+        request.token(),
+        request.concertId());
+
+    return ResponseEntity.ok().body(new ResponseAvailableConcertDates(concertSchedules.stream().map(
+        concertSchedule -> new AvailableConcertDate(concertSchedule.getStartAt(),
+            concertSchedule.getEndAt(),
+            request.concertId())).toList()));
   }
 
   @GetMapping("/available-seats")
@@ -47,9 +58,12 @@ public class ConcertController {
   })
   public ResponseEntity<ResponseAvailableConcertSeats> getAvailableConcertSeats(
       RequestAvailableConcertSeats request) {
+    List<ConcertSeat> concertSeats = concertUseCase.getAvailableConcertSeats(request.token(),
+        request.concertId());
+
     return ResponseEntity.ok().body(new ResponseAvailableConcertSeats(
-        1L,
-        List.of(new AvailableConcertSeat(1L, 1)))
-    );
+        request.concertId(),
+        concertSeats.stream().map(concertSeat -> concertSeat.getId()).toList()));
   }
+
 }

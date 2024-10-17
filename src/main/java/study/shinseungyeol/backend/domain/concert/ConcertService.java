@@ -62,4 +62,9 @@ public class ConcertService {
       throw new IllegalStateException("not available");
     }
   }
+
+  public ConcertSeat getConcertSeat(Long concertSeatId) {
+    return concertSeatRepository.findById(concertSeatId)
+        .orElseThrow(() -> new NoSuchElementException());
+  }
 }

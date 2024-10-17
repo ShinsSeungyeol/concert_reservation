@@ -9,13 +9,8 @@ public class AvailableConcertSeatsDto {
 
   }
 
-  public record ResponseAvailableConcertSeats(Long concertId,
-                                              List<AvailableConcertSeat> availableConcertSeats) {
+  public record ResponseAvailableConcertSeats(Long concertId, List<Long> availableConcertSeatIds) {
 
   }
 
-
-  public record AvailableConcertSeat(Long concertSeatId, Integer concertSeatNumber) {
-
-  }
 }

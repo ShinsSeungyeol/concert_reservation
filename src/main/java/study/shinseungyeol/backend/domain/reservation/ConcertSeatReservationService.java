@@ -50,7 +50,7 @@ public class ConcertSeatReservationService {
    *
    * @param concertSeatReservationId
    */
-  public void completeConcertSeatReservation(Long concertSeatReservationId) {
+  public ConcertSeatReservation completeConcertSeatReservation(Long concertSeatReservationId) {
     ConcertSeatReservation concertSeatReservation = reservationRepository.findByIdForUpdate(
             concertSeatReservationId)
         .orElseThrow(() -> new NoSuchElementException());
@@ -60,6 +60,8 @@ public class ConcertSeatReservationService {
     }
 
     concertSeatReservation.complete();
+
+    return concertSeatReservation;
   }
 
 }
