@@ -5,11 +5,11 @@ import java.util.UUID;
 
 public class UsePointDto {
 
-  public record RequestUsePoint(UUID token, BigDecimal useAmount) {
+  public record RequestUsePoint(UUID token, Long reservationId) {
 
   }
 
-  public record ResponseUsePoint(Long memberId, BigDecimal balanceAmount) {
+  public record ResponseUsePoint(Long reservationId, BigDecimal balanceAmount) {
 
   }
 }

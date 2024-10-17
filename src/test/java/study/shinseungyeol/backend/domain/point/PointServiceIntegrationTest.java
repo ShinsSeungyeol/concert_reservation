@@ -47,8 +47,7 @@ public class PointServiceIntegrationTest {
     BigDecimal expected = BigDecimal.valueOf(amountToCharge)
         .multiply(BigDecimal.valueOf(TRY_COUNT));
 
-    Point actualPoint = pointService.getPointByMemberId(point.getMemberId());
-    BigDecimal actual = actualPoint.getBalanceAmount();
+    BigDecimal actual = pointService.getPointByMemberId(point.getMemberId());
 
     Assertions.assertEquals(0, actual.compareTo(expected));
   }
@@ -77,8 +76,7 @@ public class PointServiceIntegrationTest {
     latch.await();
     executorService.shutdown();
 
-    Point actualPoint = pointService.getPointByMemberId(point.getMemberId());
-    BigDecimal actual = actualPoint.getBalanceAmount();
+    BigDecimal actual = pointService.getPointByMemberId(point.getMemberId());
 
     Assertions.assertEquals(0, actual.compareTo(BigDecimal.ZERO));
   }
@@ -120,9 +118,8 @@ public class PointServiceIntegrationTest {
 
     BigDecimal expected = BigDecimal.valueOf(amount)
         .add(BigDecimal.valueOf((amountToCharge * CHARGE_COUNT) - (amountToUse * USE_COUNT)));
-
-    Point actualPoint = pointService.getPointByMemberId(point.getMemberId());
-    BigDecimal actual = actualPoint.getBalanceAmount();
+    
+    BigDecimal actual = pointService.getPointByMemberId(point.getMemberId());
 
     Assertions.assertEquals(0, actual.compareTo(expected));
   }

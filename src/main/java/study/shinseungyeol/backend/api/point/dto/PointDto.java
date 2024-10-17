@@ -10,7 +10,7 @@ public class PointDto {
 
   }
 
-  public record ResponsePoint(Long memberId, BigDecimal pointAmount) {
+  public record ResponsePoint(BigDecimal pointAmount) {
 
   }
 

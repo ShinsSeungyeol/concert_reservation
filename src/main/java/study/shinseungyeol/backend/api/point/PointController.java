@@ -18,10 +18,17 @@ import study.shinseungyeol.backend.api.point.dto.PointDto.RequestPoint;
 import study.shinseungyeol.backend.api.point.dto.PointDto.ResponsePoint;
 import study.shinseungyeol.backend.api.point.dto.UsePointDto.RequestUsePoint;
 import study.shinseungyeol.backend.api.point.dto.UsePointDto.ResponseUsePoint;
+import study.shinseungyeol.backend.usecase.point.PointUseCase;
 
 @RestController
 @RequestMapping("/api/v1/point")
 public class PointController {
+
+  private final PointUseCase pointUseCase;
+
+  public PointController(PointUseCase pointUseCase) {
+    this.pointUseCase = pointUseCase;
+  }
 
   @GetMapping
   @Operation(summary = "포인트 조회 API", description = "사용자의 포인트를 조회하는 API 입니다.")
@@ -31,7 +38,10 @@ public class PointController {
       @ApiResponse(responseCode = "403", description = "토큰이 액티브 상태가 아닙니다.")
   })
   public ResponseEntity<ResponsePoint> getPoint(RequestPoint pointRequest) {
-    return ResponseEntity.ok(new ResponsePoint(1L, BigDecimal.valueOf(1L)));
+
+    BigDecimal balance = pointUseCase.getPointAmountWithValidateToken(pointRequest.token());
+
+    return ResponseEntity.ok(new ResponsePoint(balance));
   }
 
 
@@ -46,7 +56,11 @@ public class PointController {
       @ApiResponse(responseCode = "403", description = "토큰이 액티브 상태가 아닙니다.")
   })
   public ResponseEntity<ResponseUsePoint> usePoint(@RequestBody RequestUsePoint request) {
-    return ResponseEntity.ok(new ResponseUsePoint(1L, BigDecimal.valueOf(100L)));
+
+    BigDecimal balance = pointUseCase.usePointWithValidateToken(request.token(),
+        request.reservationId());
+
+    return ResponseEntity.ok(new ResponseUsePoint(request.reservationId(), balance));
   }
 
   @PatchMapping("/charging")
@@ -60,7 +74,11 @@ public class PointController {
   })
   public ResponseEntity<ResponseChargingPoint> chargingPoint(
       @RequestBody RequestChargingPoint request) {
-    return ResponseEntity.ok(new ResponseChargingPoint(1L, request.chargingAmount()));
+
+    BigDecimal balance = pointUseCase.chargePointWithValidateToken(request.token(),
+        request.chargingAmount());
+
+    return ResponseEntity.ok(new ResponseChargingPoint(balance));
   }
 
 }

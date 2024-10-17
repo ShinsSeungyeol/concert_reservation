@@ -20,13 +20,13 @@ import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PointServiceTest {
-
-  @Mock
-  PointHistoryRepository pointHistoryRepository;
+  
   @InjectMocks
   private PointService pointService;
   @Mock
   private PointRepository pointRepository;
+  @Mock
+  private PointHistoryRepository pointHistoryRepository;
 
   private Point point;
 
@@ -47,10 +47,10 @@ class PointServiceTest {
 
     when(pointRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(point));
 
-    pointService.usePoint(memberId, amountToUse);
+    BigDecimal actual = pointService.usePoint(memberId, amountToUse);
 
     verify(pointHistoryRepository).save(any(PointHistory.class));
-    assertEquals(balance.subtract(amountToUse), point.getBalanceAmount());
+    assertEquals(balance.subtract(amountToUse), actual);
   }
 
   @Test
@@ -86,11 +86,11 @@ class PointServiceTest {
 
     when(pointRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(point));
 
-    pointService.chargePoint(memberId, amountToCharge);
+    BigDecimal actual = pointService.chargePoint(memberId, amountToCharge);
 
     verify(pointHistoryRepository).save(any(PointHistory.class));
 
-    assertEquals(balance.add(amountToCharge), point.getBalanceAmount());
+    assertEquals(balance.add(amountToCharge), actual);
   }
 
   @Test
