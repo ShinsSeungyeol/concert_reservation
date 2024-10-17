@@ -61,6 +61,5 @@ public class ConcertService {
     if (!concertSeat.getAvailable()) {
       throw new IllegalStateException("not available");
     }
-
   }
 }
