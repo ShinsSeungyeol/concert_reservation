@@ -1,6 +1,5 @@
 package study.shinseungyeol.backend.api.reservation.dto;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 public class ConcertReservationDto {
@@ -9,7 +8,7 @@ public class ConcertReservationDto {
 
   }
 
-  public record ResponseConcertReservation(Long concertId, Long seatId, BigDecimal price) {
+  public record ResponseConcertReservation(Long reservationId) {
 
   }
 }

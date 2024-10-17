@@ -49,4 +49,23 @@ class ConcertSeatTest {
       ConcertSeat.create(concertSchedule, 0, null);
     });
   }
+
+  @Test
+  public void 점유_상태_변경_테스트() {
+    ConcertSeat concertSeat = new ConcertSeat(1L, concertSchedule, 2, BigDecimal.TEN, true);
+
+    concertSeat.occupied();
+
+    Assertions.assertFalse(concertSeat.getAvailable());
+  }
+
+  @Test
+  public void 좌석_사용_가능_변경_테스트() {
+    ConcertSeat concertSeat = new ConcertSeat(1L, concertSchedule, 2, BigDecimal.TEN, false);
+
+    concertSeat.available();
+
+    Assertions.assertTrue(concertSeat.getAvailable());
+
+  }
 }

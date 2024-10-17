@@ -63,8 +63,40 @@ public class ConcertService {
     }
   }
 
+  /**
+   * 콘서트 좌석 조회
+   *
+   * @param concertSeatId
+   * @return
+   */
   public ConcertSeat getConcertSeat(Long concertSeatId) {
     return concertSeatRepository.findById(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
   }
+
+  /**
+   * 콘서트 좌석 점유 처리
+   *
+   * @param concertId
+   */
+  public void convertConcertSeatToOccupied(Long concertId) {
+    ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertId)
+        .orElseThrow(() -> new NoSuchElementException());
+
+    concertSeat.occupied();
+  }
+
+  /**
+   * 콘서트 좌석 사용 가능 처리
+   *
+   * @param concertSeatId
+   */
+  public void convertConcertSeatToAvailable(Long concertSeatId) {
+    ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
+        .orElseThrow(() -> new NoSuchElementException());
+    
+    concertSeat.available();
+  }
+
+
 }

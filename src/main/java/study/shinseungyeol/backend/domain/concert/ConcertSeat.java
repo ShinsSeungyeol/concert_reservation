@@ -69,4 +69,20 @@ public class ConcertSeat extends BaseEntity {
 
     return concertSeat;
   }
+
+  /**
+   * 점유 상태로 변경
+   */
+  public void occupied() {
+    this.available = false;
+  }
+
+  /**
+   * 사용 가능한 상태로 변경
+   */
+  public void available() {
+    this.available = true;
+  }
+
+
 }
