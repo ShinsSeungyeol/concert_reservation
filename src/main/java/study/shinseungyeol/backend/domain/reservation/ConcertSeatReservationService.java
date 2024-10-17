@@ -37,7 +37,7 @@ public class ConcertSeatReservationService {
    * @return
    */
   public List<Long> cancelPendingReservationAndGetSeatIdsPerInterval() {
-    return reservationRepository.findExpiredAll(LocalDateTime.now())
+    return reservationRepository.findExpiredAll(ReservationStatus.PENDING, LocalDateTime.now())
         .stream()
         .map(concertSeatReservation -> {
           concertSeatReservation.cancel();

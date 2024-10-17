@@ -33,11 +33,14 @@ public class ContentSeatReservationUseCase {
 
     concertService.convertConcertSeatToOccupied(concertSeatId);
     tokenService.convertToInactiveToken(uuid);
-    
+
     return concertSeatReservationService.createConcertSeatReservation(token.getMemberId(),
         concertSeatId);
   }
 
+  /**
+   * 일정 시간동안 완료되지 않은 예약 취소 스케줄링
+   */
   @Scheduled(cron = "0 0/1 * * * *")
   public void cancelReservation() {
     List<Long> contentSeatIds = concertSeatReservationService.cancelPendingReservationAndGetSeatIdsPerInterval();
