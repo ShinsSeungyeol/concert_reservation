@@ -1,8 +1,10 @@
 package study.shinseungyeol.backend.usecase.reservation;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import study.shinseungyeol.backend.domain.concert.ConcertService;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationService;
@@ -30,8 +32,18 @@ public class ContentSeatReservationUseCase {
     Token token = tokenService.getTokenWithValidateActive(uuid);
 
     concertService.convertConcertSeatToOccupied(concertSeatId);
-
+    tokenService.convertToInactiveToken(uuid);
+    
     return concertSeatReservationService.createConcertSeatReservation(token.getMemberId(),
         concertSeatId);
+  }
+
+  @Scheduled(cron = "0 0/1 * * * *")
+  public void cancelReservation() {
+    List<Long> contentSeatIds = concertSeatReservationService.cancelPendingReservationAndGetSeatIdsPerInterval();
+
+    contentSeatIds.stream().forEach(seatId -> {
+      concertService.convertConcertSeatToAvailable(seatId);
+    });
   }
 }

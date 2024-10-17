@@ -74,4 +74,15 @@ public class TokenService {
     return tokenRepository.findById(uuid).orElseThrow(() -> new NoSuchElementException());
 
   }
+
+  /**
+   * 토큰을 사용하지 못하도록 변경
+   *
+   * @param uuid
+   */
+  public void convertToInactiveToken(UUID uuid) {
+    tokenRepository.findById(uuid)
+        .ifPresent(token -> token.toInactive());
+
+  }
 }
