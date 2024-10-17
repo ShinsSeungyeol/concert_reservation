@@ -118,7 +118,7 @@ public class PointServiceIntegrationTest {
 
     BigDecimal expected = BigDecimal.valueOf(amount)
         .add(BigDecimal.valueOf((amountToCharge * CHARGE_COUNT) - (amountToUse * USE_COUNT)));
-    
+
     BigDecimal actual = pointService.getPointByMemberId(point.getMemberId());
 
     Assertions.assertEquals(0, actual.compareTo(expected));

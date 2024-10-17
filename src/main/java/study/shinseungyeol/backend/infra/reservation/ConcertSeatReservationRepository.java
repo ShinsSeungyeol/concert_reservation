@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
+import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 
 @Repository
 public interface ConcertSeatReservationRepository extends
@@ -16,7 +18,8 @@ public interface ConcertSeatReservationRepository extends
 
   @Query("SELECT c FROM ConcertSeatReservation c WHERE c.reservationStatus = :status and c.expireAt < :now ")
   @Lock(LockModeType.PESSIMISTIC_WRITE)
-  List<ConcertSeatReservation> findExpiredAll(LocalDateTime now);
+  List<ConcertSeatReservation> findExpiredAll(@Param("status") ReservationStatus status,
+      @Param("now") LocalDateTime now);
 
   @Query("SELECT c FROM ConcertSeatReservation c WHERE c.id = :id")
   @Lock(LockModeType.PESSIMISTIC_WRITE)

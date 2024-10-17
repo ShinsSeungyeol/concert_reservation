@@ -37,14 +37,15 @@ class ConcertUseCaseTest {
   private ConcertRepository concertRepository;
   @Autowired
   private ConcertScheduleRepository concertScheduleRepository;
+  @Autowired
+  private ConcertSeatRepository concertSeatRepository;
 
   private Member member;
   private Concert concert;
   private List<ConcertSchedule> availableConcertSchedules;
   private List<ConcertSchedule> occupiedConcertSchedules;
   private List<ConcertSeat> concertSeats;
-  @Autowired
-  private ConcertSeatRepository concertSeatRepository;
+
 
 
   @BeforeEach

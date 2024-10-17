@@ -1,6 +1,7 @@
 package study.shinseungyeol.backend.domain.reservation;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -50,7 +51,8 @@ class ConcertSeatReservationServiceTest {
 
   @Test
   public void 예약_취소_정상_동작_테스트() {
-    when(concertSeatReservationRepository.findExpiredAll(any(LocalDateTime.class))).thenReturn(
+    when(concertSeatReservationRepository.findExpiredAll(eq(ReservationStatus.PENDING),
+        any(LocalDateTime.class))).thenReturn(
         reservationsAfterLimit);
 
     List<Long> canceledSeatIds = concertSeatReservationService.cancelPendingReservationAndGetSeatIdsPerInterval();

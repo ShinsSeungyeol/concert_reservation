@@ -77,7 +77,6 @@ class PointUseCaseTest {
   public void 포인트사용_인액티브_토큰은_불가() {
     Token inactiveToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
-    tokenRepository.save(inactiveToken);
 
     Assertions.assertThrows(IllegalStateException.class,
         () -> pointUseCase.usePointWithValidateToken(inactiveToken.getId(), concertSeat.getId()));
