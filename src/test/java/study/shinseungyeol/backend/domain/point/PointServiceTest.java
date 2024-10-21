@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +21,7 @@ import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PointServiceTest {
-  
+
   @InjectMocks
   private PointService pointService;
   @Mock
@@ -103,5 +104,12 @@ class PointServiceTest {
 
     assertThrows(IllegalArgumentException.class,
         () -> pointService.chargePoint(memberId, amountToCharge));
+  }
+
+  @Test
+  public void 포인트_조회시_멤버_ID가_없는_경우_익셉션() {
+    when(pointRepository.findByMemberId(any(Long.class))).thenReturn(Optional.empty());
+
+    assertThrows(NoSuchElementException.class, () -> pointService.getPointByMemberId(1L));
   }
 }
