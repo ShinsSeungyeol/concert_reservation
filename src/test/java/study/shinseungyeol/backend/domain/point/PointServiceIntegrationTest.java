@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import study.shinseungyeol.backend.infra.point.PointHistoryRepository;
 import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @SpringBootTest
@@ -19,6 +21,16 @@ public class PointServiceIntegrationTest {
 
   @Autowired
   private PointRepository pointRepository;
+
+  @Autowired
+  private PointHistoryRepository pointHistoryRepository;
+
+  @AfterEach
+  public void cleanUp() {
+    pointHistoryRepository.deleteAll();
+    pointRepository.deleteAll();  // 포인트 데이터를 모두 삭제
+  }
+
 
   @Test
   @DisplayName("한 사용자가 동시에 포인트를 충전할 경우, 수정 이상이 발생하면 안된다.")
