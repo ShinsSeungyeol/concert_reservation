@@ -19,9 +19,9 @@ import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 import study.shinseungyeol.backend.domain.concert.ConcertSeatRepository;
 import study.shinseungyeol.backend.domain.member.Member;
 import study.shinseungyeol.backend.domain.token.Token;
+import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
-import study.shinseungyeol.backend.infra.token.TokenRepository;
 
 @SpringBootTest
 @Transactional

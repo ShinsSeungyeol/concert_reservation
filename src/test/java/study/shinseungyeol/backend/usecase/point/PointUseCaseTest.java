@@ -25,9 +25,9 @@ import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationRepo
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationService;
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 import study.shinseungyeol.backend.domain.token.Token;
+import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
-import study.shinseungyeol.backend.infra.token.TokenRepository;
 
 @SpringBootTest
 @Transactional
@@ -58,6 +58,7 @@ class PointUseCaseTest {
   private Concert concert;
   private ConcertSchedule concertSchedule;
   private ConcertSeat concertSeat;
+  private Long reservationId;
 
 
 
@@ -70,7 +71,8 @@ class PointUseCaseTest {
         ConcertSchedule.create(concert, LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
     concertSeat = concertSeatRepository.save(
         ConcertSeat.create(concertSchedule, 1, BigDecimal.TEN));
-    concertSeatReservationService.createConcertSeatReservation(member.getId(), concertSeat.getId());
+    reservationId = concertSeatReservationService.createConcertSeatReservation(member.getId(),
+        concertSeat.getId());
   }
 
   public void 포인트사용_인액티브_토큰은_불가() {
@@ -78,7 +80,7 @@ class PointUseCaseTest {
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
 
     Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.usePointWithValidateToken(inactiveToken.getId(), concertSeat.getId()));
+        () -> pointUseCase.usePointWithValidateToken(inactiveToken.getId(), reservationId));
   }
 
   @Test
@@ -86,7 +88,7 @@ class PointUseCaseTest {
     Token pendingToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
     Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.usePointWithValidateToken(pendingToken.getId(), concertSeat.getId()));
+        () -> pointUseCase.usePointWithValidateToken(pendingToken.getId(), reservationId));
   }
 
   @Test
@@ -105,7 +107,7 @@ class PointUseCaseTest {
     BigDecimal initBalance = point.getBalanceAmount();
 
     BigDecimal actual = pointUseCase.usePointWithValidateToken(activeToken.getId(),
-        concertSeat.getId());
+        reservationId);
 
     Assertions.assertEquals(
         initBalance.subtract(concertSeat.getPrice()), actual);

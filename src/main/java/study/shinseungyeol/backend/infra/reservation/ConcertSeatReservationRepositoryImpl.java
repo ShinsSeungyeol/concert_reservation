@@ -13,30 +13,30 @@ import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 @RequiredArgsConstructor
 public class ConcertSeatReservationRepositoryImpl implements ConcertSeatReservationRepository {
 
-  private final ConcertSeatReservationJPARepository reservationRepository;
+  private final ConcertSeatReservationJPARepository reservationJPARepository;
 
   @Override
   public ConcertSeatReservation save(ConcertSeatReservation reservation) {
-    return reservationRepository.save(reservation);
+    return reservationJPARepository.save(reservation);
   }
 
   @Override
   public List<ConcertSeatReservation> findAllExpired(ReservationStatus status, LocalDateTime now) {
-    return reservationRepository.findAllExpired(status, now);
+    return reservationJPARepository.findAllExpired(status, now);
   }
 
   @Override
   public Optional<ConcertSeatReservation> findById(Long id) {
-    return reservationRepository.findById(id);
+    return reservationJPARepository.findById(id);
   }
 
   @Override
   public Optional<ConcertSeatReservation> findByIdForUpdate(Long id) {
-    return reservationRepository.findByIdForUpdate(id);
+    return reservationJPARepository.findByIdForUpdate(id);
   }
 
   @Override
   public List<ConcertSeatReservation> findAll() {
-    return reservationRepository.findAll();
+    return reservationJPARepository.findAll();
   }
 }

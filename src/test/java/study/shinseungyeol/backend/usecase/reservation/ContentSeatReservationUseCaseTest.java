@@ -20,9 +20,9 @@ import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationRepository;
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 import study.shinseungyeol.backend.domain.token.Token;
+import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
-import study.shinseungyeol.backend.infra.token.TokenRepository;
 
 @SpringBootTest
 @Transactional
