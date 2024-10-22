@@ -20,8 +20,8 @@ public class ConcertService {
    *
    * @return
    */
-  public List<ConcertSeat> getAvailableConcertSeats(Long id) {
-    Concert concert = concertRepository.findById(id)
+  public List<ConcertSeat> getAvailableConcertSeats(Long concertId) {
+    Concert concert = concertRepository.findById(concertId)
         .orElseThrow(() -> new NoSuchElementException());
 
     return concertSeatRepository.findAllAvailableSeats(concert);
@@ -30,11 +30,11 @@ public class ConcertService {
   /**
    * 콘서트의 예약 가능 일자 조회
    *
-   * @param id
+   * @param concertId
    * @return
    */
-  public List<ConcertSchedule> getAvailableConcertSchedules(Long id) {
-    Concert concert = concertRepository.findById(id)
+  public List<ConcertSchedule> getAvailableConcertSchedules(Long concertId) {
+    Concert concert = concertRepository.findById(concertId)
         .orElseThrow(() -> new NoSuchElementException());
 
     return concertScheduleRepository.findAllByConcert(
@@ -74,10 +74,10 @@ public class ConcertService {
   /**
    * 콘서트 좌석 점유 처리
    *
-   * @param concertId
+   * @param concertSeatId
    */
-  public void convertConcertSeatToOccupied(Long concertId) {
-    ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertId)
+  public void convertConcertSeatToOccupied(Long concertSeatId) {
+    ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
 
     concertSeat.occupied();
