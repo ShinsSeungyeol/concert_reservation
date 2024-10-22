@@ -13,12 +13,12 @@ import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 
 @Repository
-public interface ConcertSeatReservationRepository extends
+public interface ConcertSeatReservationJPARepository extends
     JpaRepository<ConcertSeatReservation, Long> {
 
   @Query("SELECT c FROM ConcertSeatReservation c WHERE c.reservationStatus = :status and c.expireAt < :now ")
   @Lock(LockModeType.PESSIMISTIC_WRITE)
-  List<ConcertSeatReservation> findExpiredAll(@Param("status") ReservationStatus status,
+  List<ConcertSeatReservation> findAllExpired(@Param("status") ReservationStatus status,
       @Param("now") LocalDateTime now);
 
   @Query("SELECT c FROM ConcertSeatReservation c WHERE c.id = :id")

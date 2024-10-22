@@ -17,11 +17,11 @@ import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 import study.shinseungyeol.backend.domain.concert.ConcertSeatRepository;
 import study.shinseungyeol.backend.domain.member.Member;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
+import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationRepository;
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
-import study.shinseungyeol.backend.infra.reservation.ConcertSeatReservationRepository;
 import study.shinseungyeol.backend.infra.token.TokenRepository;
 
 @SpringBootTest
@@ -40,13 +40,14 @@ class ContentSeatReservationUseCaseTest {
   private ConcertScheduleRepository concertScheduleRepository;
   @Autowired
   private ConcertSeatRepository concertSeatRepository;
+  @Autowired
+  private ConcertSeatReservationRepository concertSeatReservationRepository;
 
   private Member member;
   private Concert concert;
   private ConcertSchedule concertSchedule;
   private ConcertSeat concertSeat;
-  @Autowired
-  private ConcertSeatReservationRepository concertSeatReservationRepository;
+
 
 
   @BeforeEach

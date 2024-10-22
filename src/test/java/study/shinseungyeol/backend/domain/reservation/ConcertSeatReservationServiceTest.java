@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import study.shinseungyeol.backend.infra.reservation.ConcertSeatReservationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertSeatReservationServiceTest {
@@ -51,7 +50,7 @@ class ConcertSeatReservationServiceTest {
 
   @Test
   public void 예약_취소_정상_동작_테스트() {
-    when(concertSeatReservationRepository.findExpiredAll(eq(ReservationStatus.PENDING),
+    when(concertSeatReservationRepository.findAllExpired(eq(ReservationStatus.PENDING),
         any(LocalDateTime.class))).thenReturn(
         reservationsAfterLimit);
 
