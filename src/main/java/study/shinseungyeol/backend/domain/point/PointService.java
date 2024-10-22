@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import study.shinseungyeol.backend.infra.point.PointHistoryRepository;
-import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @Service
 @RequiredArgsConstructor

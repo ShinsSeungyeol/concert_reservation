@@ -10,16 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.shinseungyeol.backend.domain.concert.Concert;
+import study.shinseungyeol.backend.domain.concert.ConcertRepository;
 import study.shinseungyeol.backend.domain.concert.ConcertSchedule;
+import study.shinseungyeol.backend.domain.concert.ConcertScheduleRepository;
 import study.shinseungyeol.backend.domain.concert.ConcertSeat;
+import study.shinseungyeol.backend.domain.concert.ConcertSeatRepository;
 import study.shinseungyeol.backend.domain.member.Member;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
-import study.shinseungyeol.backend.infra.concert.ConcertJPARepository;
-import study.shinseungyeol.backend.infra.concert.ConcertScheduleJPARepository;
-import study.shinseungyeol.backend.infra.concert.ConcertSeatJPARepository;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
 import study.shinseungyeol.backend.infra.reservation.ConcertSeatReservationRepository;
 import study.shinseungyeol.backend.infra.token.TokenRepository;
@@ -35,11 +35,11 @@ class ContentSeatReservationUseCaseTest {
   @Autowired
   private MemberRepository memberRepository;
   @Autowired
-  private ConcertJPARepository concertRepository;
+  private ConcertRepository concertRepository;
   @Autowired
-  private ConcertScheduleJPARepository concertScheduleRepository;
+  private ConcertScheduleRepository concertScheduleRepository;
   @Autowired
-  private ConcertSeatJPARepository concertSeatRepository;
+  private ConcertSeatRepository concertSeatRepository;
 
   private Member member;
   private Concert concert;

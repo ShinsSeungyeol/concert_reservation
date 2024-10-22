@@ -34,4 +34,9 @@ public class ConcertSeatRepositoryImpl implements ConcertSeatRepository {
   public Optional<ConcertSeat> findByIdForUpdate(Long concertSeatId) {
     return concertSeatJPARepository.findByIdForUpdate(concertSeatId);
   }
+
+  @Override
+  public Optional<ConcertSeat> findById(Long concertSeatId) {
+    return concertSeatJPARepository.findById(concertSeatId);
+  }
 }

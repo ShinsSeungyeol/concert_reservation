@@ -10,8 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import study.shinseungyeol.backend.infra.point.PointHistoryRepository;
-import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @SpringBootTest
 public class PointServiceIntegrationTest {

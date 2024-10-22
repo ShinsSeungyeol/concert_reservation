@@ -13,4 +13,6 @@ public interface ConcertSeatRepository {
 
   Optional<ConcertSeat> findByIdForUpdate(Long concertSeatId);
 
+  Optional<ConcertSeat> findById(Long concertSeat);
+
 }

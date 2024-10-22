@@ -16,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import study.shinseungyeol.backend.infra.point.PointHistoryRepository;
-import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PointServiceTest {
