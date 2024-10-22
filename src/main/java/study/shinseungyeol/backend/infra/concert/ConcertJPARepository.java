@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import study.shinseungyeol.backend.domain.concert.Concert;
 
 @Repository
-public interface ConcertRepository extends JpaRepository<Concert, Long> {
+public interface ConcertJPARepository extends JpaRepository<Concert, Long> {
 
 }

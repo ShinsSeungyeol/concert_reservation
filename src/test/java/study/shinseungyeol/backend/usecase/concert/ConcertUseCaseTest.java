@@ -17,9 +17,9 @@ import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 import study.shinseungyeol.backend.domain.member.Member;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
-import study.shinseungyeol.backend.infra.concert.ConcertRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertScheduleRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertSeatRepository;
+import study.shinseungyeol.backend.infra.concert.ConcertJPARepository;
+import study.shinseungyeol.backend.infra.concert.ConcertScheduleJPARepository;
+import study.shinseungyeol.backend.infra.concert.ConcertSeatJPARepository;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
 import study.shinseungyeol.backend.infra.token.TokenRepository;
 
@@ -34,11 +34,11 @@ class ConcertUseCaseTest {
   @Autowired
   private MemberRepository memberRepository;
   @Autowired
-  private ConcertRepository concertRepository;
+  private ConcertJPARepository concertRepository;
   @Autowired
-  private ConcertScheduleRepository concertScheduleRepository;
+  private ConcertScheduleJPARepository concertScheduleRepository;
   @Autowired
-  private ConcertSeatRepository concertSeatRepository;
+  private ConcertSeatJPARepository concertSeatRepository;
 
   private Member member;
   private Concert concert;

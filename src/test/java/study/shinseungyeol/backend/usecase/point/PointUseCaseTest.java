@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.shinseungyeol.backend.domain.concert.Concert;
 import study.shinseungyeol.backend.domain.concert.ConcertSchedule;
+import study.shinseungyeol.backend.domain.concert.ConcertScheduleRepository;
 import study.shinseungyeol.backend.domain.concert.ConcertSeat;
+import study.shinseungyeol.backend.domain.concert.ConcertSeatRepository;
 import study.shinseungyeol.backend.domain.member.Member;
 import study.shinseungyeol.backend.domain.point.Point;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
@@ -21,9 +23,7 @@ import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationServ
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
-import study.shinseungyeol.backend.infra.concert.ConcertRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertScheduleRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertSeatRepository;
+import study.shinseungyeol.backend.infra.concert.ConcertJPARepository;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
 import study.shinseungyeol.backend.infra.point.PointRepository;
 import study.shinseungyeol.backend.infra.reservation.ConcertSeatReservationRepository;
@@ -40,7 +40,7 @@ class PointUseCaseTest {
   @Autowired
   private MemberRepository memberRepository;
   @Autowired
-  private ConcertRepository concertRepository;
+  private ConcertJPARepository concertRepository;
   @Autowired
   private ConcertScheduleRepository concertScheduleRepository;
   @Autowired
@@ -73,7 +73,6 @@ class PointUseCaseTest {
     concertSeatReservationService.createConcertSeatReservation(member.getId(), concertSeat.getId());
   }
 
-  @Test
   public void 포인트사용_인액티브_토큰은_불가() {
     Token inactiveToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));

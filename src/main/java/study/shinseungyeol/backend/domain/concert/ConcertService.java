@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import study.shinseungyeol.backend.infra.concert.ConcertRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertScheduleRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertSeatRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +24,7 @@ public class ConcertService {
     Concert concert = concertRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException());
 
-    return concertSeatRepository.findAllByConcertSchedule_ConcertAndAvailableIsTrue(concert);
+    return concertSeatRepository.findAllAvailableSeats(concert);
   }
 
   /**
@@ -43,7 +40,7 @@ public class ConcertService {
     return concertScheduleRepository.findAllByConcert(
             concert).stream()
         .filter(concertSchedule ->
-            concertSeatRepository.countAllByConcertScheduleAndAvailableIsTrue(concertSchedule) > 0)
+            concertSeatRepository.countAllAvailableSeats(concertSchedule) > 0)
         .toList();
   }
 
@@ -70,7 +67,7 @@ public class ConcertService {
    * @return
    */
   public ConcertSeat getConcertSeat(Long concertSeatId) {
-    return concertSeatRepository.findById(concertSeatId)
+    return concertSeatRepository.findByIdForUpdate(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
   }
 
@@ -94,7 +91,7 @@ public class ConcertService {
   public void convertConcertSeatToAvailable(Long concertSeatId) {
     ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
-    
+
     concertSeat.available();
   }
 

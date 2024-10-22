@@ -7,15 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import study.shinseungyeol.backend.domain.concert.Concert;
 import study.shinseungyeol.backend.domain.concert.ConcertSchedule;
 import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 
-public interface ConcertSeatRepository extends JpaRepository<ConcertSeat, Long> {
+@Repository
+public interface ConcertSeatJPARepository extends JpaRepository<ConcertSeat, Long> {
 
-  List<ConcertSeat> findAllByConcertSchedule_ConcertAndAvailableIsTrue(Concert concert);
+  @Query("SELECT cs FROM ConcertSeat cs WHERE cs.concertSchedule.concert = :concert AND cs.available = true")
+  List<ConcertSeat> findAllAvailableConcertSeats(@Param("concert") Concert concert);
 
-  Long countAllByConcertScheduleAndAvailableIsTrue(ConcertSchedule concertSchedule);
+  @Query("SELECT COUNT(cs) FROM ConcertSeat cs WHERE cs.concertSchedule = :concertSchedule AND cs.available = true")
+  Long countAllAvailableConcertSeats(
+      @Param("concertSchedule") ConcertSchedule concertSchedule);
 
   @Query("SELECT c FROM ConcertSeat c WHERE c.id = :concertSeatId")
   @Lock(LockModeType.PESSIMISTIC_WRITE)

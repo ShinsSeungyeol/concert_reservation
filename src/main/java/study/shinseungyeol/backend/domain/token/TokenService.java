@@ -44,6 +44,8 @@ public class TokenService {
    */
   @Scheduled(cron = "0 0/5 * * * *")
   public void activatePendingTokensPerInterval() {
+    System.out.println("NUM_OF_ACTIVE_TOKEN_PER_INTERVAL = " + NUM_OF_ACTIVE_TOKEN_PER_INTERVAL);
+                        
     Pageable pageable = PageRequest.of(0, NUM_OF_ACTIVE_TOKEN_PER_INTERVAL);
     tokenRepository.findAllByStatusOrderByUpdateAtAsc(TokenStatus.PENDING, pageable).stream()
         .forEach(

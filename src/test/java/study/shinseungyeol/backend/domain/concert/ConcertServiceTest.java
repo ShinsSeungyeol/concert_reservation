@@ -13,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import study.shinseungyeol.backend.infra.concert.ConcertRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertScheduleRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertSeatRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertServiceTest {
@@ -75,7 +72,7 @@ class ConcertServiceTest {
 
   @Test
   public void 콘서트_특정_ID_조회시_없는_경우_익셉션() {
-    when(concertSeatRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+    when(concertSeatRepository.findByIdForUpdate(any(Long.class))).thenReturn(Optional.empty());
 
     Assertions.assertThrows(NoSuchElementException.class, () -> {
       concertService.getConcertSeat(1L);
@@ -118,7 +115,7 @@ class ConcertServiceTest {
     when(concertSeatRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(concertSeat));
 
     concertService.convertConcertSeatToAvailable(1L);
-    
+
     Assertions.assertTrue(concertSeat.getAvailable());
 
   }
