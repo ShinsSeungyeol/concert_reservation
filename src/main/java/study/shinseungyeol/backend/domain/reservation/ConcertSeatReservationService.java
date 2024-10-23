@@ -20,12 +20,12 @@ public class ConcertSeatReservationService {
    * @param memberId
    * @param concertSeatId
    */
-  public Long createConcertSeatReservation(Long memberId, Long concertSeatId) {
+  public ConcertSeatReservation createConcertSeatReservation(Long memberId, Long concertSeatId) {
     ConcertSeatReservation concertSeatReservation = ConcertSeatReservation.create(memberId,
         concertSeatId);
     reservationRepository.save(concertSeatReservation);
 
-    return concertSeatReservation.getId();
+    return concertSeatReservation;
   }
 
 

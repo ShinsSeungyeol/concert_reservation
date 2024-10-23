@@ -23,6 +23,7 @@ import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
+import study.shinseungyeol.backend.usecase.reservation.dto.ReserveConcertSeat;
 
 @SpringBootTest
 @Transactional
@@ -66,8 +67,11 @@ class ContentSeatReservationUseCaseTest {
     Token token = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
 
+    ReserveConcertSeat.Command command = new ReserveConcertSeat.Command(token.getId(),
+        concertSeat.getId());
+
     Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertSeatReservationUseCase.reserveConcert(token.getId(), concertSeat.getId());
+      concertSeatReservationUseCase.reserveConcert(command);
     });
   }
 
@@ -76,8 +80,11 @@ class ContentSeatReservationUseCaseTest {
     Token token = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
 
+    ReserveConcertSeat.Command command = new ReserveConcertSeat.Command(token.getId(),
+        concertSeat.getId());
+
     Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertSeatReservationUseCase.reserveConcert(token.getId(), concertSeat.getId());
+      concertSeatReservationUseCase.reserveConcert(command);
     });
   }
 
@@ -86,7 +93,10 @@ class ContentSeatReservationUseCaseTest {
     Token token = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE));
 
-    concertSeatReservationUseCase.reserveConcert(token.getId(), concertSeat.getId());
+    ReserveConcertSeat.Command command = new ReserveConcertSeat.Command(token.getId(),
+        concertSeat.getId());
+
+    concertSeatReservationUseCase.reserveConcert(command);
 
     ConcertSeat actual = concertSeatRepository.findById(concertSeat.getId()).orElse(null);
     Assertions.assertNotNull(actual);

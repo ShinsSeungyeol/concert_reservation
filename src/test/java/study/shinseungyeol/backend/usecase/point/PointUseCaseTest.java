@@ -74,7 +74,7 @@ class PointUseCaseTest {
     concertSeat = concertSeatRepository.save(
         ConcertSeat.create(concertSchedule, 1, BigDecimal.TEN));
     reservationId = concertSeatReservationService.createConcertSeatReservation(member.getId(),
-        concertSeat.getId());
+        concertSeat.getId()).getId();
   }
 
   public void 포인트사용_인액티브_토큰은_불가() {
