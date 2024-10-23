@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import study.shinseungyeol.backend.infra.point.PointHistoryRepository;
-import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class PointService {
    * @param memberId
    * @param amount
    */
-  public BigDecimal usePoint(Long memberId, BigDecimal amount) {
+  public Point usePoint(Long memberId, BigDecimal amount) {
     Point point = pointRepository.findByMemberIdForUpdate(memberId)
         .orElseThrow(NoSuchElementException::new);
 
@@ -31,7 +29,7 @@ public class PointService {
     PointHistory pointHistory = PointHistory.create(point, PointHistoryType.USE, amount);
     pointHistoryRepository.save(pointHistory);
 
-    return point.getBalanceAmount();
+    return point;
   }
 
   /**
@@ -40,7 +38,7 @@ public class PointService {
    * @param memberId
    * @param amount
    */
-  public BigDecimal chargePoint(Long memberId, BigDecimal amount) {
+  public Point chargePoint(Long memberId, BigDecimal amount) {
     Point point = pointRepository.findByMemberIdForUpdate(memberId)
         .orElseThrow(NoSuchElementException::new);
 
@@ -49,7 +47,7 @@ public class PointService {
     PointHistory pointHistory = PointHistory.create(point, PointHistoryType.CHARGING, amount);
     pointHistoryRepository.save(pointHistory);
 
-    return point.getBalanceAmount();
+    return point;
   }
 
   /**
@@ -58,8 +56,8 @@ public class PointService {
    * @param memberId
    * @return
    */
-  public BigDecimal getPointByMemberId(Long memberId) {
-    return pointRepository.findByMemberId(memberId).map(Point::getBalanceAmount)
+  public Point getPointByMemberId(Long memberId) {
+    return pointRepository.findByMemberId(memberId)
         .orElseThrow(NoSuchElementException::new);
   }
 }

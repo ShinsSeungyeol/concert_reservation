@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import study.shinseungyeol.backend.domain.point.Point;
 
 @Repository
-public interface PointRepository extends JpaRepository<Point, Long> {
+public interface PointJpaRepository extends JpaRepository<Point, Long> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT p FROM Point p where p.memberId = :memberId")

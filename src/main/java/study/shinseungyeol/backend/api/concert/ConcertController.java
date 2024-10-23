@@ -11,13 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import study.shinseungyeol.backend.api.concert.dto.AvailableConcertDatesDto.AvailableConcertDate;
-import study.shinseungyeol.backend.api.concert.dto.AvailableConcertDatesDto.RequestAvailableConcertDates;
-import study.shinseungyeol.backend.api.concert.dto.AvailableConcertDatesDto.ResponseAvailableConcertDates;
-import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatsDto.RequestAvailableConcertSeats;
-import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatsDto.ResponseAvailableConcertSeats;
-import study.shinseungyeol.backend.domain.concert.ConcertSchedule;
-import study.shinseungyeol.backend.domain.concert.ConcertSeat;
+import study.shinseungyeol.backend.api.concert.dto.AvailableConcertScheduleAPI;
+import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatAPI;
+import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatAPI.Request;
+import study.shinseungyeol.backend.api.concert.dto.AvailableConcertSeatAPI.Response;
 import study.shinseungyeol.backend.usecase.concert.ConcertUseCase;
 
 @RestController
@@ -31,39 +28,33 @@ public class ConcertController {
   @Operation(summary = "콘서트 예약 가능 날짜들 조회", description = "현재 기준으로 예약 가능한 콘서트와 날짜 정보를 반환한다.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "날짜 목록 조회 성공", content = {
-          @Content(schema = @Schema(implementation = ResponseAvailableConcertDates.class))
+          @Content(schema = @Schema(implementation = AvailableConcertScheduleAPI.Response.class))
       }),
       @ApiResponse(responseCode = "403", description = "토큰이 액티브 상태가 아닙니다.")
   })
-  public ResponseEntity<ResponseAvailableConcertDates> getAvailableConcertDates(
-      RequestAvailableConcertDates request) {
+  public ResponseEntity<List<AvailableConcertScheduleAPI.Response>> getAvailableConcertDates(
+      AvailableConcertScheduleAPI.Request request) {
 
-    List<ConcertSchedule> concertSchedules = concertUseCase.getAvailableConcertSchedules(
-        request.token(),
-        request.concertId());
+    List<AvailableConcertScheduleAPI.Response> responses = concertUseCase.getAvailableConcertSchedules(
+        request.toQuery()).stream().map(AvailableConcertScheduleAPI.Response::of).toList();
 
-    return ResponseEntity.ok().body(new ResponseAvailableConcertDates(concertSchedules.stream().map(
-        concertSchedule -> new AvailableConcertDate(concertSchedule.getStartAt(),
-            concertSchedule.getEndAt(),
-            request.concertId())).toList()));
+    return ResponseEntity.ok().body(responses);
   }
 
   @GetMapping("/available-seats")
   @Operation(summary = "콘서트 예약 가능 좌석 반환", description = "콘서트 예약 가능 좌석 정보들을 반환한다.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "현재 기준으로 콘서트 예약 가능 좌석 목록 조회 성공.", content = {
-          @Content(schema = @Schema(implementation = ResponseAvailableConcertSeats.class))
+          @Content(schema = @Schema(implementation = Response.class))
       }),
       @ApiResponse(responseCode = "403", description = "토큰이 액티브 상태가 아닙니다.")
   })
-  public ResponseEntity<ResponseAvailableConcertSeats> getAvailableConcertSeats(
-      RequestAvailableConcertSeats request) {
-    List<ConcertSeat> concertSeats = concertUseCase.getAvailableConcertSeats(request.token(),
-        request.concertId());
+  public ResponseEntity<List<AvailableConcertSeatAPI.Response>> getAvailableConcertSeats(
+      Request request) {
+    List<Response> responses = concertUseCase.getAvailableConcertSeats(request.toQuery()).stream()
+        .map(Response::of).toList();
 
-    return ResponseEntity.ok().body(new ResponseAvailableConcertSeats(
-        request.concertId(),
-        concertSeats.stream().map(concertSeat -> concertSeat.getId()).toList()));
+    return ResponseEntity.ok().body(responses);
   }
 
 }

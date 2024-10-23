@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,12 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import study.shinseungyeol.backend.infra.point.PointHistoryRepository;
-import study.shinseungyeol.backend.infra.point.PointRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PointServiceTest {
-  
+
   @InjectMocks
   private PointService pointService;
   @Mock
@@ -47,7 +46,7 @@ class PointServiceTest {
 
     when(pointRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(point));
 
-    BigDecimal actual = pointService.usePoint(memberId, amountToUse);
+    BigDecimal actual = pointService.usePoint(memberId, amountToUse).getBalanceAmount();
 
     verify(pointHistoryRepository).save(any(PointHistory.class));
     assertEquals(balance.subtract(amountToUse), actual);
@@ -86,7 +85,7 @@ class PointServiceTest {
 
     when(pointRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(point));
 
-    BigDecimal actual = pointService.chargePoint(memberId, amountToCharge);
+    BigDecimal actual = pointService.chargePoint(memberId, amountToCharge).getBalanceAmount();
 
     verify(pointHistoryRepository).save(any(PointHistory.class));
 
@@ -103,5 +102,12 @@ class PointServiceTest {
 
     assertThrows(IllegalArgumentException.class,
         () -> pointService.chargePoint(memberId, amountToCharge));
+  }
+
+  @Test
+  public void 포인트_조회시_멤버_ID가_없는_경우_익셉션() {
+    when(pointRepository.findByMemberId(any(Long.class))).thenReturn(Optional.empty());
+
+    assertThrows(NoSuchElementException.class, () -> pointService.getPointByMemberId(1L));
   }
 }

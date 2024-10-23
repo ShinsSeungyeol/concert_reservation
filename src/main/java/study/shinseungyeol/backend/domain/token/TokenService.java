@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import study.shinseungyeol.backend.infra.token.TokenRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class TokenService {
    * @return
    */
   public UUID createOrUpdateStatusToPending(Long memberId) {
-    return tokenRepository.findByMemberId(memberId)
+    return tokenRepository.findByMemberIdForUpdate(memberId)
         .map(existToken -> {
           existToken.toPending();
           return existToken.getId();
@@ -44,6 +43,8 @@ public class TokenService {
    */
   @Scheduled(cron = "0 0/5 * * * *")
   public void activatePendingTokensPerInterval() {
+    System.out.println("NUM_OF_ACTIVE_TOKEN_PER_INTERVAL = " + NUM_OF_ACTIVE_TOKEN_PER_INTERVAL);
+
     Pageable pageable = PageRequest.of(0, NUM_OF_ACTIVE_TOKEN_PER_INTERVAL);
     tokenRepository.findAllByStatusOrderByUpdateAtAsc(TokenStatus.PENDING, pageable).stream()
         .forEach(
@@ -58,7 +59,8 @@ public class TokenService {
    * @return
    */
   public Token getTokenWithValidateActive(UUID uuid) {
-    Token token = tokenRepository.findById(uuid).orElseThrow(() -> new NoSuchElementException());
+    Token token = tokenRepository.findByIdForUpdate(uuid)
+        .orElseThrow(() -> new NoSuchElementException());
     token.validateActive();
 
     return token;
@@ -71,7 +73,7 @@ public class TokenService {
    * @return
    */
   public Token getToken(UUID uuid) {
-    return tokenRepository.findById(uuid).orElseThrow(() -> new NoSuchElementException());
+    return tokenRepository.findByIdForUpdate(uuid).orElseThrow(() -> new NoSuchElementException());
 
   }
 
@@ -81,7 +83,7 @@ public class TokenService {
    * @param uuid
    */
   public void convertToInactiveToken(UUID uuid) {
-    tokenRepository.findById(uuid)
+    tokenRepository.findByIdForUpdate(uuid)
         .ifPresent(token -> token.toInactive());
 
   }

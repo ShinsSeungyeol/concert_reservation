@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import study.shinseungyeol.backend.infra.token.TokenRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TokenServiceTest {
@@ -34,7 +33,7 @@ class TokenServiceTest {
     Long memberId = 1L;
     Token token = new Token(UUID.randomUUID(), memberId, TokenStatus.INACTIVE);
 
-    when(tokenRepository.findByMemberId(memberId)).thenReturn(Optional.of(token));
+    when(tokenRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(token));
 
     tokenService.createOrUpdateStatusToPending(memberId);
 
@@ -46,7 +45,7 @@ class TokenServiceTest {
   public void 토큰_생성_토큰_없는_경우() {
     Long memberId = 1L;
 
-    when(tokenRepository.findByMemberId(memberId)).thenReturn(Optional.empty());
+    when(tokenRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.empty());
 
     tokenService.createOrUpdateStatusToPending(memberId);
 
@@ -57,7 +56,7 @@ class TokenServiceTest {
   @DisplayName("토큰이 존재하지 않는 경우, 토큰 조회시 에러가 나야 한다.")
   public void 토큰_없는_경우_토큰_조회_에러() {
     UUID uuid = java.util.UUID.randomUUID();
-    when(tokenRepository.findById(uuid)).thenReturn(Optional.empty());
+    when(tokenRepository.findByIdForUpdate(uuid)).thenReturn(Optional.empty());
 
     Assertions.assertThrows(NoSuchElementException.class,
         () -> tokenService.getTokenWithValidateActive(uuid));
@@ -68,7 +67,8 @@ class TokenServiceTest {
   public void 토큰_인액티브_상태일때_getTokenWithValidateActive_테스트() {
     Token inactiveToken = new Token(UUID.randomUUID(), 1L, TokenStatus.INACTIVE);
 
-    when(tokenRepository.findById(inactiveToken.getId())).thenReturn(Optional.of(inactiveToken));
+    when(tokenRepository.findByIdForUpdate(inactiveToken.getId())).thenReturn(
+        Optional.of(inactiveToken));
 
     Assertions.assertThrows(IllegalStateException.class,
         () -> tokenService.getTokenWithValidateActive(inactiveToken.getId()));
@@ -79,7 +79,8 @@ class TokenServiceTest {
   public void 토큰_팬딩_상태일때_getTokenWithValidateActive_테스트() {
     Token pendingToken = new Token(UUID.randomUUID(), 1L, TokenStatus.PENDING);
 
-    when(tokenRepository.findById(pendingToken.getId())).thenReturn(Optional.of(pendingToken));
+    when(tokenRepository.findByIdForUpdate(pendingToken.getId())).thenReturn(
+        Optional.of(pendingToken));
 
     Assertions.assertThrows(IllegalStateException.class,
         () -> tokenService.getTokenWithValidateActive(pendingToken.getId()));

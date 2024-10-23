@@ -14,12 +14,19 @@ import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 
 @Repository
-public interface TokenRepository extends JpaRepository<Token, UUID> {
+public interface TokenJPARepository extends JpaRepository<Token, UUID> {
 
-  Optional<Token> findByMemberId(Long memberId);
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("SELECT t FROM Token t where t.memberId= :memberId")
+  Optional<Token> findByMemberIdForUpdate(Long memberId);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT t FROM Token t WHERE t.status = :status ORDER BY t.updateAt ASC ")
   List<Token> findAllByStatusOrderByUpdateAtAsc(@Param("status") TokenStatus tokenStatus,
       Pageable pageable);
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("SELECT t FROM Token t where t.id = :id")
+  Optional<Token> findByIdForUpdate(UUID id);
 }
+

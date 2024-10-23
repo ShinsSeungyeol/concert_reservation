@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import study.shinseungyeol.backend.infra.reservation.ConcertSeatReservationRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +20,12 @@ public class ConcertSeatReservationService {
    * @param memberId
    * @param concertSeatId
    */
-  public Long createConcertSeatReservation(Long memberId, Long concertSeatId) {
+  public ConcertSeatReservation createConcertSeatReservation(Long memberId, Long concertSeatId) {
     ConcertSeatReservation concertSeatReservation = ConcertSeatReservation.create(memberId,
         concertSeatId);
     reservationRepository.save(concertSeatReservation);
 
-    return concertSeatReservation.getId();
+    return concertSeatReservation;
   }
 
 
@@ -37,7 +36,7 @@ public class ConcertSeatReservationService {
    * @return
    */
   public List<Long> cancelPendingReservationAndGetSeatIdsPerInterval() {
-    return reservationRepository.findExpiredAll(ReservationStatus.PENDING, LocalDateTime.now())
+    return reservationRepository.findAllExpired(ReservationStatus.PENDING, LocalDateTime.now())
         .stream()
         .map(concertSeatReservation -> {
           concertSeatReservation.cancel();

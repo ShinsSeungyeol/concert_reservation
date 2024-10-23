@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import study.shinseungyeol.backend.infra.concert.ConcertRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertScheduleRepository;
-import study.shinseungyeol.backend.infra.concert.ConcertSeatRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -23,27 +20,27 @@ public class ConcertService {
    *
    * @return
    */
-  public List<ConcertSeat> getAvailableConcertSeats(Long id) {
-    Concert concert = concertRepository.findById(id)
+  public List<ConcertSeat> getAvailableConcertSeats(Long concertId) {
+    Concert concert = concertRepository.findById(concertId)
         .orElseThrow(() -> new NoSuchElementException());
 
-    return concertSeatRepository.findAllByConcertSchedule_ConcertAndAvailableIsTrue(concert);
+    return concertSeatRepository.findAllAvailableSeats(concert);
   }
 
   /**
    * 콘서트의 예약 가능 일자 조회
    *
-   * @param id
+   * @param concertId
    * @return
    */
-  public List<ConcertSchedule> getAvailableConcertSchedules(Long id) {
-    Concert concert = concertRepository.findById(id)
+  public List<ConcertSchedule> getAvailableConcertSchedules(Long concertId) {
+    Concert concert = concertRepository.findById(concertId)
         .orElseThrow(() -> new NoSuchElementException());
 
     return concertScheduleRepository.findAllByConcert(
             concert).stream()
         .filter(concertSchedule ->
-            concertSeatRepository.countAllByConcertScheduleAndAvailableIsTrue(concertSchedule) > 0)
+            concertSeatRepository.countAllAvailableSeats(concertSchedule) > 0)
         .toList();
   }
 
@@ -70,17 +67,17 @@ public class ConcertService {
    * @return
    */
   public ConcertSeat getConcertSeat(Long concertSeatId) {
-    return concertSeatRepository.findById(concertSeatId)
+    return concertSeatRepository.findByIdForUpdate(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
   }
 
   /**
    * 콘서트 좌석 점유 처리
    *
-   * @param concertId
+   * @param concertSeatId
    */
-  public void convertConcertSeatToOccupied(Long concertId) {
-    ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertId)
+  public void convertConcertSeatToOccupied(Long concertSeatId) {
+    ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
 
     concertSeat.occupied();
@@ -94,7 +91,7 @@ public class ConcertService {
   public void convertConcertSeatToAvailable(Long concertSeatId) {
     ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
         .orElseThrow(() -> new NoSuchElementException());
-    
+
     concertSeat.available();
   }
 

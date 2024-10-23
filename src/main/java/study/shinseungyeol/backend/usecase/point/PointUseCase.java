@@ -1,16 +1,19 @@
 package study.shinseungyeol.backend.usecase.point;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 import study.shinseungyeol.backend.domain.concert.ConcertService;
+import study.shinseungyeol.backend.domain.point.Point;
 import study.shinseungyeol.backend.domain.point.PointService;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationService;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenService;
+import study.shinseungyeol.backend.usecase.point.dto.ChargePoint;
+import study.shinseungyeol.backend.usecase.point.dto.GetPoint;
+import study.shinseungyeol.backend.usecase.point.dto.UsePoint;
 
 @Component
 @RequiredArgsConstructor
@@ -22,34 +25,35 @@ public class PointUseCase {
   private final ConcertService concertService;
 
   /**
-   * 토큰이 액티브 상태라면 포인트 를 사용한다.
+   * 포인트 사용하는 유즈케이스
    *
-   * @param uuid
-   * @param reservationId
+   * @param command
+   * @return
    */
-  public BigDecimal usePointWithValidateToken(UUID uuid, Long reservationId) {
-    Token token = tokenService.getTokenWithValidateActive(uuid);
+  public UsePoint.CommandResult usePointWithValidateToken(UsePoint.Command command) {
+    Token token = tokenService.getTokenWithValidateActive(command.getUuid());
 
     ConcertSeatReservation concertSeatReservation =
-        concertSeatReservationService.completeConcertSeatReservation(reservationId);
+        concertSeatReservationService.completeConcertSeatReservation(command.getReservationId());
 
     ConcertSeat concertSeat = concertService.getConcertSeat(
         concertSeatReservation.getConcertSeatId());
 
-    return pointService.usePoint(token.getMemberId(), concertSeat.getPrice());
+    Point point = pointService.usePoint(token.getMemberId(), concertSeat.getPrice());
+
+    return UsePoint.CommandResult.of(point);
   }
 
 
   /**
-   * 토큰이 액티브 상태라면 포인트를 충전한다.
-   *
-   * @param uuid
-   * @param amountToUse
+   * @param command
+   * @return
    */
-  public BigDecimal chargePointWithValidateToken(UUID uuid, BigDecimal amountToUse) {
-    Token token = tokenService.getTokenWithValidateActive(uuid);
+  public ChargePoint.CommandResult chargePointWithValidateToken(ChargePoint.Command command) {
+    Token token = tokenService.getTokenWithValidateActive(command.getUuid());
 
-    return pointService.chargePoint(token.getMemberId(), amountToUse);
+    return ChargePoint.CommandResult.of(
+        pointService.chargePoint(token.getMemberId(), command.getChargingAmount()));
   }
 
 
@@ -58,10 +62,10 @@ public class PointUseCase {
    *
    * @param uuid
    */
-  public BigDecimal getPointAmountWithValidateToken(UUID uuid) {
+  public GetPoint.QueryResult getPointAmountWithValidateToken(UUID uuid) {
     Token token = tokenService.getTokenWithValidateActive(uuid);
 
-    return pointService.getPointByMemberId(token.getMemberId());
+    return GetPoint.QueryResult.of(pointService.getPointByMemberId(token.getMemberId()));
 
   }
 }

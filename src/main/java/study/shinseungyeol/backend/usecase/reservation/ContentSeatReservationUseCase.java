@@ -2,14 +2,16 @@ package study.shinseungyeol.backend.usecase.reservation;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import study.shinseungyeol.backend.domain.concert.ConcertService;
+import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationService;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenService;
+import study.shinseungyeol.backend.usecase.reservation.dto.ReserveConcertSeat;
+import study.shinseungyeol.backend.usecase.reservation.dto.ReserveConcertSeat.CommandResult;
 
 @Component
 @RequiredArgsConstructor
@@ -22,20 +24,20 @@ public class ContentSeatReservationUseCase {
 
 
   /**
-   * 콘서트 좌석 예약 유즈 케이스
-   *
-   * @param uuid
-   * @param concertSeatId
+   * @param command
    * @return
    */
-  public Long reserveConcert(UUID uuid, Long concertSeatId) {
-    Token token = tokenService.getTokenWithValidateActive(uuid);
+  public CommandResult reserveConcert(ReserveConcertSeat.Command command) {
+    Token token = tokenService.getTokenWithValidateActive(command.getUuid());
 
-    concertService.convertConcertSeatToOccupied(concertSeatId);
-    tokenService.convertToInactiveToken(uuid);
+    concertService.convertConcertSeatToOccupied(command.getConcertSeatId());
+    tokenService.convertToInactiveToken(command.getUuid());
 
-    return concertSeatReservationService.createConcertSeatReservation(token.getMemberId(),
-        concertSeatId);
+    ConcertSeatReservation concertSeatReservation = concertSeatReservationService.createConcertSeatReservation(
+        token.getMemberId(),
+        command.getConcertSeatId());
+
+    return ReserveConcertSeat.CommandResult.of(concertSeatReservation);
   }
 
   /**
