@@ -22,6 +22,8 @@ import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
+import study.shinseungyeol.backend.usecase.concert.dto.AvailableConcertSchedule.Query;
+import study.shinseungyeol.backend.usecase.concert.dto.AvailableConcertSeat;
 
 @SpringBootTest
 @Transactional
@@ -86,37 +88,40 @@ class ConcertUseCaseTest {
   @Test
   public void 예약_가능_날짜_토큰_대기_상태_사용자_이용_불가() {
     Token pendingToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING);
-
     tokenRepository.save(pendingToken);
 
+    Query query = new Query(pendingToken.getId(), concert.getId());
+
     Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSchedules(pendingToken.getId(), concert.getId());
+      concertUseCase.getAvailableConcertSchedules(query);
     });
   }
 
   @Test
   public void 예약_가능_날짜_토큰_인액티브_상태_사용자_이용_불가() {
     Token inactiveToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE);
-
     tokenRepository.save(inactiveToken);
 
+    Query query = new Query(inactiveToken.getId(), concert.getId());
+
     Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSchedules(inactiveToken.getId(), concert.getId());
+      concertUseCase.getAvailableConcertSchedules(query);
     });
   }
 
   @Test
   public void 예약_가능_날짜_조회_정상_동작_테스트() {
     Token activeToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE);
-
     tokenRepository.save(activeToken);
 
-    List<ConcertSchedule> actual = concertUseCase.getAvailableConcertSchedules(
-        activeToken.getId(), concert.getId());
+    Query query = new Query(activeToken.getId(), concert.getId());
+
+    List<Long> actual = concertUseCase.getAvailableConcertSchedules(
+        query).stream().map(queryResult -> queryResult.getConcertId()).toList();
 
     Assertions.assertEquals(availableConcertSchedules.size(), actual.size());
 
-    availableConcertSchedules.forEach(
+    availableConcertSchedules.stream().map(ConcertSchedule::getId).forEach(
         expect -> Assertions.assertTrue(actual.contains(expect))
     );
 
@@ -126,22 +131,26 @@ class ConcertUseCaseTest {
   @Test
   public void 예약_가능_좌석_대기_상태_사용자_이용_불가() {
     Token pendingToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING);
-
     tokenRepository.save(pendingToken);
 
+    AvailableConcertSeat.Query query = new AvailableConcertSeat.Query(pendingToken.getId(),
+        concert.getId());
+
     Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSeats(pendingToken.getId(), concert.getId());
+      concertUseCase.getAvailableConcertSeats(query);
     });
   }
 
   @Test
   public void 예약_가능_좌석_인액티브_상태_사용자_이용_불가() {
     Token inactiveToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE);
-
     tokenRepository.save(inactiveToken);
 
+    AvailableConcertSeat.Query query = new AvailableConcertSeat.Query(inactiveToken.getId(),
+        concert.getId());
+
     Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSeats(inactiveToken.getId(), concert.getId());
+      concertUseCase.getAvailableConcertSeats(query);
     });
   }
 
@@ -150,8 +159,10 @@ class ConcertUseCaseTest {
     Token activeToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE);
     tokenRepository.save(activeToken);
 
-    List<ConcertSeat> actual = concertUseCase.getAvailableConcertSeats(activeToken.getId(),
+    AvailableConcertSeat.Query query = new AvailableConcertSeat.Query(activeToken.getId(),
         concert.getId());
+
+    List<AvailableConcertSeat.QueryResult> actual = concertUseCase.getAvailableConcertSeats(query);
 
     long expect = concertSeats.stream().filter(ConcertSeat::getAvailable).count();
 
