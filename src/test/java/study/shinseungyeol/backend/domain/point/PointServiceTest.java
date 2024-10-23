@@ -46,7 +46,7 @@ class PointServiceTest {
 
     when(pointRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(point));
 
-    BigDecimal actual = pointService.usePoint(memberId, amountToUse);
+    BigDecimal actual = pointService.usePoint(memberId, amountToUse).getBalanceAmount();
 
     verify(pointHistoryRepository).save(any(PointHistory.class));
     assertEquals(balance.subtract(amountToUse), actual);
@@ -85,7 +85,7 @@ class PointServiceTest {
 
     when(pointRepository.findByMemberIdForUpdate(memberId)).thenReturn(Optional.of(point));
 
-    BigDecimal actual = pointService.chargePoint(memberId, amountToCharge);
+    BigDecimal actual = pointService.chargePoint(memberId, amountToCharge).getBalanceAmount();
 
     verify(pointHistoryRepository).save(any(PointHistory.class));
 

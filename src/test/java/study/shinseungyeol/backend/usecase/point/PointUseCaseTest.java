@@ -28,6 +28,8 @@ import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
+import study.shinseungyeol.backend.usecase.point.dto.ChargePoint;
+import study.shinseungyeol.backend.usecase.point.dto.UsePoint.Command;
 
 @SpringBootTest
 @Transactional
@@ -79,24 +81,32 @@ class PointUseCaseTest {
     Token inactiveToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
 
+    Command command = new Command(inactiveToken.getId(), reservationId);
+
     Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.usePointWithValidateToken(inactiveToken.getId(), reservationId));
+        () -> pointUseCase.usePointWithValidateToken(command));
   }
 
   @Test
   public void 포인트사용_대기_토큰은_불가() {
     Token pendingToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
+
+    Command command = new Command(pendingToken.getId(), reservationId);
+
     Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.usePointWithValidateToken(pendingToken.getId(), reservationId));
+        () -> pointUseCase.usePointWithValidateToken(command));
   }
 
   @Test
   public void 포인트_사용_예약_내역_없는_경우_에러() {
     Token activeToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE));
+
+    Command command = new Command(activeToken.getId(), 300L);
+
     Assertions.assertThrows(NoSuchElementException.class,
-        () -> pointUseCase.usePointWithValidateToken(activeToken.getId(), 300L));
+        () -> pointUseCase.usePointWithValidateToken(command));
   }
 
   @Test
@@ -104,10 +114,11 @@ class PointUseCaseTest {
     Token activeToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE));
 
+    Command command = new Command(activeToken.getId(), reservationId);
+
     BigDecimal initBalance = point.getBalanceAmount();
 
-    BigDecimal actual = pointUseCase.usePointWithValidateToken(activeToken.getId(),
-        reservationId);
+    BigDecimal actual = pointUseCase.usePointWithValidateToken(command).getBalance();
 
     Assertions.assertEquals(
         initBalance.subtract(concertSeat.getPrice()), actual);
@@ -125,16 +136,22 @@ class PointUseCaseTest {
   public void 포인트충전_인액티브_토큰은_불가() {
     Token inactiveToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
+
+    ChargePoint.Command command = new ChargePoint.Command(inactiveToken.getId(), BigDecimal.TEN);
+
     Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.chargePointWithValidateToken(inactiveToken.getId(), BigDecimal.TEN));
+        () -> pointUseCase.chargePointWithValidateToken(command));
   }
 
   @Test
   public void 포인트충전_대기_토큰은_불가() {
     Token pendingToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
+
+    ChargePoint.Command command = new ChargePoint.Command(pendingToken.getId(), BigDecimal.TEN);
+
     Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.chargePointWithValidateToken(pendingToken.getId(), BigDecimal.TEN));
+        () -> pointUseCase.chargePointWithValidateToken(command));
   }
 
   @Test
@@ -144,7 +161,9 @@ class PointUseCaseTest {
     BigDecimal init = point.getBalanceAmount();
     BigDecimal charge = BigDecimal.TEN;
 
-    pointUseCase.chargePointWithValidateToken(activeToken.getId(), charge);
+    ChargePoint.Command command = new ChargePoint.Command(activeToken.getId(), charge);
+
+    pointUseCase.chargePointWithValidateToken(command);
 
     Assertions.assertEquals(init.add(charge).compareTo(point.getBalanceAmount()), 0);
   }
@@ -173,7 +192,8 @@ class PointUseCaseTest {
 
     BigDecimal expect = point.getBalanceAmount();
 
-    BigDecimal actual = pointUseCase.getPointAmountWithValidateToken(activeToken.getId());
+    BigDecimal actual = pointUseCase.getPointAmountWithValidateToken(activeToken.getId())
+        .getBalance();
 
     Assertions.assertEquals(expect, actual);
   }
