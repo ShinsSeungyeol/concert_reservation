@@ -3,6 +3,8 @@ package study.shinseungyeol.backend.domain.reservation;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 class ConcertSeatReservationTest {
 
@@ -54,11 +56,15 @@ class ConcertSeatReservationTest {
   }
 
   @Test
-  public void 예약이_만료_되었는지_정상동작_테스트() {
+  public void 예약이_만료_되었는을_때_익셉션() {
     ConcertSeatReservation concertSeatReservation = new ConcertSeatReservation(1L, 1L, 1L,
         ReservationStatus.PENDING, LocalDateTime.now());
 
-    Assertions.assertTrue(concertSeatReservation.isExpired());
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+      concertSeatReservation.checkIsExpired();
+    });
+
+    Assertions.assertEquals(ErrorCode.EXPIRED_SEAT_RESERVATION, customException.getErrorCode());
   }
 
   @Test
@@ -66,6 +72,6 @@ class ConcertSeatReservationTest {
     ConcertSeatReservation concertSeatReservation = new ConcertSeatReservation(1L, 1L, 1L,
         ReservationStatus.PENDING, LocalDateTime.now().plusSeconds(1));
 
-    Assertions.assertFalse(concertSeatReservation.isExpired());
+    concertSeatReservation.checkIsExpired();
   }
 }
