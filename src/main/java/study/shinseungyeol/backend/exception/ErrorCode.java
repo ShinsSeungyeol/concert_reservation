@@ -18,7 +18,8 @@ public enum ErrorCode {
   NOT_ENOUGH_BALANCE(HttpStatus.PAYMENT_REQUIRED, "EEP008", "포인트가 부족합니다."),
   EXPIRED_SEAT_RESERVATION(HttpStatus.BAD_REQUEST, "ESR009", "좌석 예약이 이미 만료되었습니다"),
   NOT_ACTIVE_TOKEN(HttpStatus.FORBIDDEN, "NAT010", "토큰이 액티브 상태가 아닙니다"),
-  DUPLICATED_PAYMENT(HttpStatus.CONFLICT, "DP001", "이미 결제된 좌석입니다."),
+  DUPLICATED_PAYMENT(HttpStatus.CONFLICT, "DP011", "이미 결제된 좌석입니다."),
+  UNAVAILABLE_SEAT(HttpStatus.CONFLICT, "US012", "이미 예약된 좌석입니다."),
   ;
 
   private HttpStatus status;

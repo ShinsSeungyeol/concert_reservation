@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.shinseungyeol.backend.domain.BaseEntity;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Entity
 @Getter
@@ -74,6 +76,9 @@ public class ConcertSeat extends BaseEntity {
    * 점유 상태로 변경
    */
   public void occupied() {
+    if (!this.available) {
+      throw new CustomException(ErrorCode.UNAVAILABLE_SEAT);
+    }
     this.available = false;
   }
 
