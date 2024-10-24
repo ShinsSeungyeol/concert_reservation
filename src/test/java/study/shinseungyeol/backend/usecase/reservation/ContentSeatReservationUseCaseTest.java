@@ -61,32 +61,7 @@ class ContentSeatReservationUseCaseTest {
     concertSeat = concertSeatRepository.save(
         ConcertSeat.create(concertSchedule, 1, BigDecimal.TEN));
   }
-
-  @Test
-  public void 콘서트좌석_예약_인액티브_토큰_불가() {
-    Token token = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
-
-    ReserveConcertSeat.Command command = new ReserveConcertSeat.Command(token.getId(),
-        concertSeat.getId());
-
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertSeatReservationUseCase.reserveConcert(command);
-    });
-  }
-
-  @Test
-  public void 콘서트좌석_예약_대기_토큰_불가() {
-    Token token = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
-
-    ReserveConcertSeat.Command command = new ReserveConcertSeat.Command(token.getId(),
-        concertSeat.getId());
-
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertSeatReservationUseCase.reserveConcert(command);
-    });
-  }
+  
 
   @Test
   public void 콘서트좌석_예약_정상_테스트() {

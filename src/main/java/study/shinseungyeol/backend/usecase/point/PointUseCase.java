@@ -31,7 +31,7 @@ public class PointUseCase {
    * @return
    */
   public UsePoint.CommandResult usePointWithValidateToken(UsePoint.Command command) {
-    Token token = tokenService.getTokenWithValidateActive(command.getUuid());
+    Token token = tokenService.getToken(command.getUuid());
 
     ConcertSeatReservation concertSeatReservation =
         concertSeatReservationService.completeConcertSeatReservation(command.getReservationId());
@@ -50,7 +50,7 @@ public class PointUseCase {
    * @return
    */
   public ChargePoint.CommandResult chargePointWithValidateToken(ChargePoint.Command command) {
-    Token token = tokenService.getTokenWithValidateActive(command.getUuid());
+    Token token = tokenService.getToken(command.getUuid());
 
     return ChargePoint.CommandResult.of(
         pointService.chargePoint(token.getMemberId(), command.getChargingAmount()));
@@ -63,7 +63,7 @@ public class PointUseCase {
    * @param uuid
    */
   public GetPoint.QueryResult getPointAmountWithValidateToken(UUID uuid) {
-    Token token = tokenService.getTokenWithValidateActive(uuid);
+    Token token = tokenService.getToken(uuid);
 
     return GetPoint.QueryResult.of(pointService.getPointByMemberId(token.getMemberId()));
 

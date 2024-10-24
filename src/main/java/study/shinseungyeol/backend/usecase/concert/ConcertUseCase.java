@@ -17,7 +17,6 @@ public class ConcertUseCase {
 
   public List<AvailableConcertSchedule.QueryResult> getAvailableConcertSchedules(
       AvailableConcertSchedule.Query query) {
-    tokenService.getTokenWithValidateActive(query.getUuid());
 
     return concertService.getAvailableConcertSchedules(
         query.getConcertID()).stream().map(AvailableConcertSchedule.QueryResult::of).toList();
@@ -25,7 +24,6 @@ public class ConcertUseCase {
 
   public List<AvailableConcertSeat.QueryResult> getAvailableConcertSeats(
       AvailableConcertSeat.Query query) {
-    tokenService.getTokenWithValidateActive(query.getUuid());
 
     return concertService.getAvailableConcertSeats(query.getConcertId()).stream()
         .map(AvailableConcertSeat.QueryResult::of).toList();

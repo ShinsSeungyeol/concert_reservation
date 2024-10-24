@@ -13,10 +13,10 @@ public class AvailableConcertSeatAPI {
   public static class Request {
 
     private Long concertId;
-    private UUID token;
+    private UUID uuid;
 
     public Query toQuery() {
-      return new Query(token, concertId);
+      return new Query(uuid, concertId);
     }
   }
 

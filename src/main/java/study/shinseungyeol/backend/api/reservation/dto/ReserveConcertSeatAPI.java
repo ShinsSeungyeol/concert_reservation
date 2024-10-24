@@ -11,11 +11,11 @@ public class ReserveConcertSeatAPI {
   @AllArgsConstructor
   public static class Request {
 
-    private UUID token;
+    private UUID uuid;
     private Long seatId;
 
     public ReserveConcertSeat.Command toCommand() {
-      return new ReserveConcertSeat.Command(token, seatId);
+      return new ReserveConcertSeat.Command(uuid, seatId);
     }
 
   }

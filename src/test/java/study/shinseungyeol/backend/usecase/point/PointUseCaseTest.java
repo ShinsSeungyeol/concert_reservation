@@ -89,17 +89,6 @@ class PointUseCaseTest {
   }
 
   @Test
-  public void 포인트사용_대기_토큰은_불가() {
-    Token pendingToken = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
-
-    Command command = new Command(pendingToken.getId(), reservationId);
-
-    Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.usePointWithValidateToken(command));
-  }
-
-  @Test
   public void 포인트_사용_예약_내역_없는_경우_에러() {
     Token activeToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE));
@@ -136,28 +125,6 @@ class PointUseCaseTest {
   }
 
   @Test
-  public void 포인트충전_인액티브_토큰은_불가() {
-    Token inactiveToken = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
-
-    ChargePoint.Command command = new ChargePoint.Command(inactiveToken.getId(), BigDecimal.TEN);
-
-    Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.chargePointWithValidateToken(command));
-  }
-
-  @Test
-  public void 포인트충전_대기_토큰은_불가() {
-    Token pendingToken = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
-
-    ChargePoint.Command command = new ChargePoint.Command(pendingToken.getId(), BigDecimal.TEN);
-
-    Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.chargePointWithValidateToken(command));
-  }
-
-  @Test
   public void 포인트충전_정상_동작() {
     Token activeToken = tokenRepository.save(
         new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE));
@@ -171,22 +138,6 @@ class PointUseCaseTest {
     Assertions.assertEquals(init.add(charge).compareTo(point.getBalanceAmount()), 0);
   }
 
-  @Test
-  public void 포인트조회_인액티브_토큰은_불가() {
-    Token inactiveToken = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE));
-
-    Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.getPointAmountWithValidateToken(inactiveToken.getId()));
-  }
-
-  @Test
-  public void 포인트조회_대기_토큰은_불가() {
-    Token pendingToken = tokenRepository.save(
-        new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING));
-    Assertions.assertThrows(IllegalStateException.class,
-        () -> pointUseCase.getPointAmountWithValidateToken(pendingToken.getId()));
-  }
 
   @Test
   public void 포인트조회_정상_동작() {

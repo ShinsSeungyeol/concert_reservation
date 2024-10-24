@@ -12,11 +12,11 @@ public class ChargePointAPI {
   @AllArgsConstructor
   public static class Request {
 
-    private UUID token;
+    private UUID uuid;
     private BigDecimal chargingAmount;
 
     public ChargePoint.Command toCommand() {
-      return new ChargePoint.Command(token, chargingAmount);
+      return new ChargePoint.Command(uuid, chargingAmount);
     }
   }
 
