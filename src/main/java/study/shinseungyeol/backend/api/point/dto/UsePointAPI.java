@@ -12,11 +12,11 @@ public class UsePointAPI {
   @AllArgsConstructor
   public static class Request {
 
-    private UUID token;
+    private UUID uuid;
     private Long reservationId;
 
     public UsePoint.Command toCommand() {
-      return new UsePoint.Command(token, reservationId);
+      return new UsePoint.Command(uuid, reservationId);
     }
   }
 

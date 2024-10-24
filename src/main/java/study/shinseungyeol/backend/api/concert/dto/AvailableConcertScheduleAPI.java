@@ -12,11 +12,11 @@ public class AvailableConcertScheduleAPI {
   @AllArgsConstructor
   public static class Request {
 
-    private UUID token;
+    private UUID uuid;
     private Long concertId;
 
     public AvailableConcertSchedule.Query toQuery() {
-      return new AvailableConcertSchedule.Query(this.getToken(), this.getConcertId());
+      return new AvailableConcertSchedule.Query(this.getUuid(), this.getConcertId());
     }
 
   }

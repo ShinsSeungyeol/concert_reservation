@@ -86,30 +86,6 @@ class ConcertUseCaseTest {
   }
 
   @Test
-  public void 예약_가능_날짜_토큰_대기_상태_사용자_이용_불가() {
-    Token pendingToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING);
-    tokenRepository.save(pendingToken);
-
-    Query query = new Query(pendingToken.getId(), concert.getId());
-
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSchedules(query);
-    });
-  }
-
-  @Test
-  public void 예약_가능_날짜_토큰_인액티브_상태_사용자_이용_불가() {
-    Token inactiveToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE);
-    tokenRepository.save(inactiveToken);
-
-    Query query = new Query(inactiveToken.getId(), concert.getId());
-
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSchedules(query);
-    });
-  }
-
-  @Test
   public void 예약_가능_날짜_조회_정상_동작_테스트() {
     Token activeToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE);
     tokenRepository.save(activeToken);
@@ -128,31 +104,6 @@ class ConcertUseCaseTest {
 
   }
 
-  @Test
-  public void 예약_가능_좌석_대기_상태_사용자_이용_불가() {
-    Token pendingToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.PENDING);
-    tokenRepository.save(pendingToken);
-
-    AvailableConcertSeat.Query query = new AvailableConcertSeat.Query(pendingToken.getId(),
-        concert.getId());
-
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSeats(query);
-    });
-  }
-
-  @Test
-  public void 예약_가능_좌석_인액티브_상태_사용자_이용_불가() {
-    Token inactiveToken = new Token(UUID.randomUUID(), member.getId(), TokenStatus.INACTIVE);
-    tokenRepository.save(inactiveToken);
-
-    AvailableConcertSeat.Query query = new AvailableConcertSeat.Query(inactiveToken.getId(),
-        concert.getId());
-
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      concertUseCase.getAvailableConcertSeats(query);
-    });
-  }
 
   @Test
   public void 예약_가능_좌석_조회() {

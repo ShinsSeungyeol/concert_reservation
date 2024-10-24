@@ -28,7 +28,7 @@ public class ContentSeatReservationUseCase {
    * @return
    */
   public CommandResult reserveConcert(ReserveConcertSeat.Command command) {
-    Token token = tokenService.getTokenWithValidateActive(command.getUuid());
+    Token token = tokenService.getToken(command.getUuid());
 
     concertService.convertConcertSeatToOccupied(command.getConcertSeatId());
     tokenService.convertToInactiveToken(command.getUuid());

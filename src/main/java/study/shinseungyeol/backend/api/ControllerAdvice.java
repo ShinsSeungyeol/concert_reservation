@@ -5,12 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import study.shinseungyeol.backend.exception.CustomException;
 import study.shinseungyeol.backend.exception.ErrorCode;
 
 @RestControllerAdvice
-public class ControllerAdvice extends ResponseEntityExceptionHandler {
+public class ControllerAdvice {
 
   @ExceptionHandler(value = {CustomException.class})
   public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
