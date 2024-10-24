@@ -2,9 +2,10 @@ package study.shinseungyeol.backend.domain.point;
 
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class PointService {
    */
   public Point usePoint(Long memberId, BigDecimal amount) {
     Point point = pointRepository.findByMemberIdForUpdate(memberId)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
     point.usePoint(amount);
 
@@ -40,7 +41,7 @@ public class PointService {
    */
   public Point chargePoint(Long memberId, BigDecimal amount) {
     Point point = pointRepository.findByMemberIdForUpdate(memberId)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
     point.addPoint(amount);
 
@@ -58,6 +59,6 @@ public class PointService {
    */
   public Point getPointByMemberId(Long memberId) {
     return pointRepository.findByMemberId(memberId)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
   }
 }
