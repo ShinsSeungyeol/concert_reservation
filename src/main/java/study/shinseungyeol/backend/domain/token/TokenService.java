@@ -1,13 +1,14 @@
 package study.shinseungyeol.backend.domain.token;
 
 import jakarta.transaction.Transactional;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +61,7 @@ public class TokenService {
    */
   public Token getTokenWithValidateActive(UUID uuid) {
     Token token = tokenRepository.findByIdForUpdate(uuid)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TOKEN));
     token.validateActive();
 
     return token;
@@ -73,7 +74,8 @@ public class TokenService {
    * @return
    */
   public Token getToken(UUID uuid) {
-    return tokenRepository.findByIdForUpdate(uuid).orElseThrow(() -> new NoSuchElementException());
+    return tokenRepository.findByIdForUpdate(uuid)
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TOKEN));
 
   }
 
