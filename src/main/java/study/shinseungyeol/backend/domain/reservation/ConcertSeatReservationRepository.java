@@ -16,4 +16,6 @@ public interface ConcertSeatReservationRepository {
 
   List<ConcertSeatReservation> findAll();
 
+  void deleteAll();
+
 }

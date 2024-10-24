@@ -22,5 +22,9 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     return concertJPARepository.save(concert);
   }
 
+  @Override
+  public void deleteAll() {
+    concertJPARepository.deleteAll();
+  }
 
 }

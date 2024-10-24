@@ -23,5 +23,10 @@ public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository 
     return concertScheduleJPARepository.findAllByConcert(concert);
   }
 
+  @Override
+  public void deleteAll() {
+    concertScheduleJPARepository.deleteAll();
+  }
+
 
 }

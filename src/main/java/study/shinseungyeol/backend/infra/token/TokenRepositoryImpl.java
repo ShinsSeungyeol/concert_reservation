@@ -35,4 +35,9 @@ public class TokenRepositoryImpl implements TokenRepository {
   public Optional<Token> findByIdForUpdate(UUID uuid) {
     return tokenJPARepository.findByIdForUpdate(uuid);
   }
+
+  @Override
+  public void deleteAll() {
+    tokenJPARepository.deleteAll();
+  }
 }

@@ -39,4 +39,9 @@ public class ConcertSeatReservationRepositoryImpl implements ConcertSeatReservat
   public List<ConcertSeatReservation> findAll() {
     return reservationJPARepository.findAll();
   }
+
+  @Override
+  public void deleteAll() {
+    reservationJPARepository.deleteAll();
+  }
 }
