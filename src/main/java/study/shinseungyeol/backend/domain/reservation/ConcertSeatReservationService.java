@@ -3,9 +3,10 @@ package study.shinseungyeol.backend.domain.reservation;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -54,11 +55,9 @@ public class ConcertSeatReservationService {
   public ConcertSeatReservation completeConcertSeatReservation(Long concertSeatReservationId) {
     ConcertSeatReservation concertSeatReservation = reservationRepository.findByIdForUpdate(
             concertSeatReservationId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESERVATION));
 
-    if (concertSeatReservation.isExpired()) {
-      throw new IllegalStateException("expired");
-    }
+    concertSeatReservation.checkIsExpired();
 
     concertSeatReservation.complete();
 

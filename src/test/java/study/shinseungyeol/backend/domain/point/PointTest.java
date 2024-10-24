@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import study.shinseungyeol.backend.domain.member.Member;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 class PointTest {
 
@@ -67,7 +69,9 @@ class PointTest {
     BigDecimal balance = point.getBalanceAmount();
     BigDecimal balanceToUse = balance.add(BigDecimal.valueOf(1));
 
-    Assertions.assertThrows(IllegalStateException.class,
+    CustomException customException = Assertions.assertThrows(CustomException.class,
         () -> point.usePoint(balanceToUse));
+
+    Assertions.assertEquals(ErrorCode.NOT_ENOUGH_BALANCE, customException.getErrorCode());
   }
 }

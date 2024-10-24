@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertSeatReservationServiceTest {
@@ -76,9 +77,11 @@ class ConcertSeatReservationServiceTest {
   public void 좌석_예약_완료_예약_없는_경우() {
     when(concertSeatReservationRepository.findByIdForUpdate(1L)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
       concertSeatReservationService.completeConcertSeatReservation(1L);
     });
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_RESERVATION, customException.getErrorCode());
   }
 
   @Test

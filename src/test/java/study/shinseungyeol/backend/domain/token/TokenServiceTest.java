@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
@@ -17,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @ExtendWith(MockitoExtension.class)
 class TokenServiceTest {
@@ -58,8 +59,22 @@ class TokenServiceTest {
     UUID uuid = java.util.UUID.randomUUID();
     when(tokenRepository.findByIdForUpdate(uuid)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class,
+    CustomException customException = Assertions.assertThrows(CustomException.class,
+        () -> tokenService.getToken(uuid));
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_TOKEN, customException.getErrorCode());
+  }
+
+  @Test
+  @DisplayName("getTokenWithValidateActive 호출 시에 토큰이 없다면 에러가 나야 한다.")
+  public void 토큰_없는_경우_getTokenWithValidateActive() {
+    UUID uuid = java.util.UUID.randomUUID();
+    when(tokenRepository.findByIdForUpdate(uuid)).thenReturn(Optional.empty());
+
+    CustomException customException = Assertions.assertThrows(CustomException.class,
         () -> tokenService.getTokenWithValidateActive(uuid));
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_TOKEN, customException.getErrorCode());
   }
 
   @Test

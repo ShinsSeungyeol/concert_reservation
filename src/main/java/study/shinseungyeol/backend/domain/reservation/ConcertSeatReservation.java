@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.shinseungyeol.backend.domain.BaseEntity;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Entity
 @Getter
@@ -85,7 +87,10 @@ public class ConcertSeatReservation extends BaseEntity {
   /**
    * 예약 만료되었는지 리턴
    */
-  public boolean isExpired() {
-    return LocalDateTime.now().isAfter(expireAt);
+  public void checkIsExpired() {
+
+    if (LocalDateTime.now().isAfter(expireAt)) {
+      throw new CustomException(ErrorCode.EXPIRED_SEAT_RESERVATION);
+    }
   }
 }

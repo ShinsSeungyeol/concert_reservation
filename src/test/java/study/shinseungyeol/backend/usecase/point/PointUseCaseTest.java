@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +26,8 @@ import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
 import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenRepository;
 import study.shinseungyeol.backend.domain.token.TokenStatus;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 import study.shinseungyeol.backend.infra.member.MemberRepository;
 import study.shinseungyeol.backend.usecase.point.dto.ChargePoint;
 import study.shinseungyeol.backend.usecase.point.dto.UsePoint.Command;
@@ -105,8 +106,10 @@ class PointUseCaseTest {
 
     Command command = new Command(activeToken.getId(), 300L);
 
-    Assertions.assertThrows(NoSuchElementException.class,
+    CustomException customException = Assertions.assertThrows(CustomException.class,
         () -> pointUseCase.usePointWithValidateToken(command));
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_RESERVATION, customException.getErrorCode());
   }
 
   @Test

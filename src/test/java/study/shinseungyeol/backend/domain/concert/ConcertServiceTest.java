@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertServiceTest {
@@ -33,27 +34,33 @@ class ConcertServiceTest {
   public void 콘서트_예약_가능_좌석_목록_조회_콘서트_없는_경우() {
     when(concertRepository.findById(1L)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
       concertService.getAvailableConcertSeats(1L);
     });
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_CONCERT, customException.getErrorCode());
   }
 
   @Test
   public void 콘서트_예약_가능_일자_조회_콘서트_없는_경우() {
     when(concertRepository.findById(1L)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
       concertService.getAvailableConcertSchedules(1L);
     });
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_CONCERT, customException.getErrorCode());
   }
 
   @Test
   public void 예약_가능한_좌석_조회_콘서트_좌석이_존재하지_않는_경우() {
     when(concertSeatRepository.findByIdForUpdate(1L)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
       concertService.checkAvailableConcertSeatWithLock(1L);
     });
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_SEAT, customException.getErrorCode());
   }
 
   @Test
@@ -71,21 +78,14 @@ class ConcertServiceTest {
   }
 
   @Test
-  public void 콘서트_특정_ID_조회시_없는_경우_익셉션() {
-    when(concertSeatRepository.findByIdForUpdate(any(Long.class))).thenReturn(Optional.empty());
-
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
-      concertService.getConcertSeat(1L);
-    });
-  }
-
-  @Test
   public void 콘서트_좌석_점유_ID_없는_경우_익셉션() {
     when(concertSeatRepository.findByIdForUpdate(any(Long.class))).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
       concertService.getConcertSeat(1L);
     });
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_SEAT, customException.getErrorCode());
   }
 
   @Test
@@ -103,9 +103,11 @@ class ConcertServiceTest {
   public void 콘서트_좌석_사용_가능_상태로_변경_ID_없는_경우_익셉션() {
     when(concertSeatRepository.findByIdForUpdate(any(Long.class))).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NoSuchElementException.class, () -> {
+    CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
       concertService.convertConcertSeatToAvailable(1L);
     });
+
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_SEAT, customException.getErrorCode());
   }
 
   @Test

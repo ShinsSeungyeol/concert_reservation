@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import study.shinseungyeol.backend.domain.BaseEntity;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Entity
 @Getter
@@ -71,8 +73,7 @@ public class Point extends BaseEntity {
     }
 
     if (balanceAmount.compareTo(amount) < 0) {
-      throw new IllegalStateException(
-          "Insufficient balance. The balance amount must be greater than or equal to the required amount.");
+      throw new CustomException(ErrorCode.NOT_ENOUGH_BALANCE);
     }
 
     BigDecimal subtracted = balanceAmount.subtract(amount);
