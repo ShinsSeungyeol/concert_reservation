@@ -23,7 +23,7 @@ public class PointService {
    */
   public Point usePoint(Long memberId, BigDecimal amount) {
     Point point = pointRepository.findByMemberIdForUpdate(memberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POINT));
 
     point.usePoint(amount);
 
@@ -41,7 +41,7 @@ public class PointService {
    */
   public Point chargePoint(Long memberId, BigDecimal amount) {
     Point point = pointRepository.findByMemberIdForUpdate(memberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POINT));
 
     point.addPoint(amount);
 
@@ -59,6 +59,6 @@ public class PointService {
    */
   public Point getPointByMemberId(Long memberId) {
     return pointRepository.findByMemberId(memberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POINT));
   }
 }

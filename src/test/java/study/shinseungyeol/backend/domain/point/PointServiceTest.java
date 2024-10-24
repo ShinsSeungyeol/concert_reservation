@@ -62,7 +62,7 @@ class PointServiceTest {
     CustomException customException = assertThrows(CustomException.class,
         () -> pointService.usePoint(1L, BigDecimal.valueOf(100)));
 
-    Assertions.assertEquals(ErrorCode.NOT_FOUND_MEMBER, customException.getErrorCode());
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_POINT, customException.getErrorCode());
   }
 
   @Test
@@ -116,7 +116,7 @@ class PointServiceTest {
     CustomException customException = assertThrows(CustomException.class,
         () -> pointService.chargePoint(1L, BigDecimal.valueOf(100)));
 
-    Assertions.assertEquals(ErrorCode.NOT_FOUND_MEMBER, customException.getErrorCode());
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_POINT, customException.getErrorCode());
   }
 
   @Test
@@ -138,6 +138,6 @@ class PointServiceTest {
     CustomException customException = assertThrows(CustomException.class,
         () -> pointService.getPointByMemberId(1L));
 
-    Assertions.assertEquals(ErrorCode.NOT_FOUND_MEMBER, customException.getErrorCode());
+    Assertions.assertEquals(ErrorCode.NOT_FOUND_POINT, customException.getErrorCode());
   }
 }
