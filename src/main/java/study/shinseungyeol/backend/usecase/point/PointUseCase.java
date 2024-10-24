@@ -1,5 +1,6 @@
 package study.shinseungyeol.backend.usecase.point;
 
+import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import study.shinseungyeol.backend.usecase.point.dto.UsePoint;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class PointUseCase {
 
   private final PointService pointService;
@@ -30,7 +32,7 @@ public class PointUseCase {
    * @param command
    * @return
    */
-  public UsePoint.CommandResult usePointWithValidateToken(UsePoint.Command command) {
+  public UsePoint.CommandResult usePoint(UsePoint.Command command) {
     Token token = tokenService.getToken(command.getUuid());
 
     ConcertSeatReservation concertSeatReservation =
@@ -49,7 +51,7 @@ public class PointUseCase {
    * @param command
    * @return
    */
-  public ChargePoint.CommandResult chargePointWithValidateToken(ChargePoint.Command command) {
+  public ChargePoint.CommandResult chargePoint(ChargePoint.Command command) {
     Token token = tokenService.getToken(command.getUuid());
 
     return ChargePoint.CommandResult.of(
@@ -62,7 +64,7 @@ public class PointUseCase {
    *
    * @param uuid
    */
-  public GetPoint.QueryResult getPointAmountWithValidateToken(UUID uuid) {
+  public GetPoint.QueryResult getPointAmount(UUID uuid) {
     Token token = tokenService.getToken(uuid);
 
     return GetPoint.QueryResult.of(pointService.getPointByMemberId(token.getMemberId()));

@@ -81,6 +81,9 @@ public class ConcertSeatReservation extends BaseEntity {
    * 좌석 예약 완료시키는 함수
    */
   public void complete() {
+    if (getReservationStatus() == ReservationStatus.COMPLETED) {
+      throw new CustomException(ErrorCode.DUPLICATED_PAYMENT);
+    }
     setReservationStatus(ReservationStatus.COMPLETED);
   }
 
