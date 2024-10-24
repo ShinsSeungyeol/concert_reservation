@@ -6,9 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @RestControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
+
+  @ExceptionHandler(value = {CustomException.class})
+  public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+    ErrorCode errorCode = e.getErrorCode();
+
+    return ResponseEntity.status(errorCode.getStatus())
+        .body(new ErrorResponse(errorCode.getCode(), errorCode.getMessage()));
+  }
 
   @ExceptionHandler(value = {NoSuchElementException.class})
   public ResponseEntity<ErrorResponse> handleNotFoundException(NoSuchElementException ex) {
