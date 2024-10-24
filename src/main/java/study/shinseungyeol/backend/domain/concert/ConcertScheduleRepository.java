@@ -7,4 +7,6 @@ public interface ConcertScheduleRepository {
   ConcertSchedule save(ConcertSchedule concertSchedule);
 
   List<ConcertSchedule> findAllByConcert(Concert concert);
+
+  void deleteAll();
 }

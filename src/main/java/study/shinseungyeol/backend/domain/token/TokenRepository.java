@@ -14,4 +14,6 @@ public interface TokenRepository {
   List<Token> findAllByStatusOrderByUpdateAtAsc(TokenStatus status, Pageable pageable);
 
   Optional<Token> findByIdForUpdate(UUID uuid);
+
+  void deleteAll();
 }

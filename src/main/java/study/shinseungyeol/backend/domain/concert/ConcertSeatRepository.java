@@ -15,4 +15,6 @@ public interface ConcertSeatRepository {
 
   Optional<ConcertSeat> findById(Long concertSeat);
 
+  void deleteAll();
+
 }

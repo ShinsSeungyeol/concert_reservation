@@ -7,4 +7,6 @@ public interface ConcertRepository {
   Optional<Concert> findById(Long id);
 
   Concert save(Concert concert);
+
+  void deleteAll();
 }

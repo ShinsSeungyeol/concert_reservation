@@ -1,11 +1,16 @@
 package study.shinseungyeol.backend.usecase.reservation;
 
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +21,9 @@ import study.shinseungyeol.backend.domain.concert.ConcertScheduleRepository;
 import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 import study.shinseungyeol.backend.domain.concert.ConcertSeatRepository;
 import study.shinseungyeol.backend.domain.member.Member;
+import study.shinseungyeol.backend.domain.point.Point;
+import study.shinseungyeol.backend.domain.point.PointHistoryRepository;
+import study.shinseungyeol.backend.domain.point.PointRepository;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservation;
 import study.shinseungyeol.backend.domain.reservation.ConcertSeatReservationRepository;
 import study.shinseungyeol.backend.domain.reservation.ReservationStatus;
@@ -26,7 +34,6 @@ import study.shinseungyeol.backend.infra.member.MemberRepository;
 import study.shinseungyeol.backend.usecase.reservation.dto.ReserveConcertSeat;
 
 @SpringBootTest
-@Transactional
 class ContentSeatReservationUseCaseTest {
 
   @Autowired
@@ -43,6 +50,10 @@ class ContentSeatReservationUseCaseTest {
   private ConcertSeatRepository concertSeatRepository;
   @Autowired
   private ConcertSeatReservationRepository concertSeatReservationRepository;
+  @Autowired
+  private PointRepository pointRepository;
+  @Autowired
+  private PointHistoryRepository pointHistoryRepository;
 
   private Member member;
   private Concert concert;
@@ -50,6 +61,17 @@ class ContentSeatReservationUseCaseTest {
   private ConcertSeat concertSeat;
 
 
+  @AfterEach
+  public void tearDown() throws Exception {
+    tokenRepository.deleteAll();
+    memberRepository.deleteAll();
+    pointHistoryRepository.deleteAll();
+    pointRepository.deleteAll();
+    concertSeatReservationRepository.deleteAll();
+    concertSeatRepository.deleteAll();
+    concertScheduleRepository.deleteAll();
+    concertRepository.deleteAll();
+  }
 
   @BeforeEach
   public void setUp() {
@@ -61,7 +83,7 @@ class ContentSeatReservationUseCaseTest {
     concertSeat = concertSeatRepository.save(
         ConcertSeat.create(concertSchedule, 1, BigDecimal.TEN));
   }
-  
+
 
   @Test
   public void 콘서트좌석_예약_정상_테스트() {
@@ -101,5 +123,40 @@ class ContentSeatReservationUseCaseTest {
     Assertions.assertNotNull(actualConcertSeat);
     Assertions.assertEquals(true, actualConcertSeat.getAvailable());
 
+  }
+
+  @Test
+  @DisplayName("여러명의 사용자가 한 좌석을 예약 하려고 할 때, 한명만 예약 성공해야 한다")
+  public void 좌석_예약_동시성_테스트() throws InterruptedException {
+
+    final int TRY_COUNT = 10;
+
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    CountDownLatch latch = new CountDownLatch(TRY_COUNT);
+    AtomicInteger successCount = new AtomicInteger(0);
+
+    for (int i = 0; i < TRY_COUNT; i++) {
+      Member member = memberRepository.save(Member.create("test"));
+      Token token = tokenRepository.save(
+          new Token(UUID.randomUUID(), member.getId(), TokenStatus.ACTIVE));
+      pointRepository.save(new Point(0L, member.getId(), BigDecimal.valueOf(100000)));
+      ReserveConcertSeat.Command command = new ReserveConcertSeat.Command(token.getId(),
+          concertSeat.getId());
+
+      executorService.submit(() -> {
+        try {
+          concertSeatReservationUseCase.reserveConcert(
+              command);
+          successCount.incrementAndGet();
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
+
+    latch.await();
+    executorService.shutdown();
+
+    Assertions.assertEquals(1, successCount.get());
   }
 }

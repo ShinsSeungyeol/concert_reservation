@@ -37,7 +37,7 @@ public class PointController {
   public ResponseEntity<GetPointAPI.Response> getPoint(GetPointAPI.Request request) {
 
     GetPointAPI.Response response = GetPointAPI.Response.of(
-        pointUseCase.getPointAmountWithValidateToken(request.getUuid()));
+        pointUseCase.getPointAmount(request.getUuid()));
 
     return ResponseEntity.ok().body(response);
   }
@@ -56,7 +56,7 @@ public class PointController {
   public ResponseEntity<UsePointAPI.Response> usePoint(@RequestBody UsePointAPI.Request request) {
 
     UsePointAPI.Response response = Response.of(
-        pointUseCase.usePointWithValidateToken(request.toCommand()));
+        pointUseCase.usePoint(request.toCommand()));
 
     return ResponseEntity.ok().body(response);
   }
@@ -74,7 +74,7 @@ public class PointController {
       @RequestBody ChargePointAPI.Request request) {
 
     ChargePointAPI.Response response = ChargePointAPI.Response.of(
-        pointUseCase.chargePointWithValidateToken(request.toCommand()));
+        pointUseCase.chargePoint(request.toCommand()));
 
     return ResponseEntity.ok(response);
   }
