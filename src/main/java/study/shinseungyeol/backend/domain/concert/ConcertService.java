@@ -2,9 +2,10 @@ package study.shinseungyeol.backend.domain.concert;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import study.shinseungyeol.backend.exception.CustomException;
+import study.shinseungyeol.backend.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class ConcertService {
    */
   public List<ConcertSeat> getAvailableConcertSeats(Long concertId) {
     Concert concert = concertRepository.findById(concertId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CONCERT));
 
     return concertSeatRepository.findAllAvailableSeats(concert);
   }
@@ -35,7 +36,7 @@ public class ConcertService {
    */
   public List<ConcertSchedule> getAvailableConcertSchedules(Long concertId) {
     Concert concert = concertRepository.findById(concertId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CONCERT));
 
     return concertScheduleRepository.findAllByConcert(
             concert).stream()
@@ -53,7 +54,7 @@ public class ConcertService {
    */
   public void checkAvailableConcertSeatWithLock(Long concertSeatId) {
     ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEAT));
 
     if (!concertSeat.getAvailable()) {
       throw new IllegalStateException("not available");
@@ -68,7 +69,7 @@ public class ConcertService {
    */
   public ConcertSeat getConcertSeat(Long concertSeatId) {
     return concertSeatRepository.findByIdForUpdate(concertSeatId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEAT));
   }
 
   /**
@@ -78,7 +79,7 @@ public class ConcertService {
    */
   public void convertConcertSeatToOccupied(Long concertSeatId) {
     ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEAT));
 
     concertSeat.occupied();
   }
@@ -90,7 +91,7 @@ public class ConcertService {
    */
   public void convertConcertSeatToAvailable(Long concertSeatId) {
     ConcertSeat concertSeat = concertSeatRepository.findByIdForUpdate(concertSeatId)
-        .orElseThrow(() -> new NoSuchElementException());
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEAT));
 
     concertSeat.available();
   }
