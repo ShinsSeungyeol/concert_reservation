@@ -15,5 +15,8 @@ public interface TokenRepository {
 
   Optional<Token> findByIdForUpdate(UUID uuid);
 
+  Optional<Token> findById(UUID uuid);
+
+
   void deleteAll();
 }

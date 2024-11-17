@@ -1,0 +1,11 @@
+FROM redis:7.2.5-alpine3.20
+
+EXPOSE 6379
+
+CMD ["redis-server"]
+
+#docker build -f DockerFile.yaml . -t simple-redis
+#sudo docker run -p 6379:6379 simple-redis
+#docker ps
+#docker exec -it ca3a540fc196  /bin/sh
+#redis-cli

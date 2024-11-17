@@ -95,10 +95,12 @@ class ContentSeatReservationUseCaseTest {
 
     concertSeatReservationUseCase.reserveConcert(command);
 
+    Token actualToken = tokenRepository.findById(token.getId()).orElse(null);
+
     ConcertSeat actual = concertSeatRepository.findById(concertSeat.getId()).orElse(null);
     Assertions.assertNotNull(actual);
     Assertions.assertEquals(false, actual.getAvailable());
-    Assertions.assertEquals(TokenStatus.INACTIVE, token.getStatus());
+    Assertions.assertEquals(TokenStatus.INACTIVE, actualToken.getStatus());
 
   }
 
@@ -108,14 +110,17 @@ class ContentSeatReservationUseCaseTest {
 
     ConcertSeatReservation concertSeatReservation = new ConcertSeatReservation(null,
         newMember.getId(), concertSeat.getId(),
-        ReservationStatus.PENDING, LocalDateTime.now());
+        ReservationStatus.PENDING, LocalDateTime.now().minusSeconds(20));
 
     concertSeatReservationRepository.save(concertSeatReservation);
 
     concertSeatReservationUseCase.cancelReservation();
 
+    ConcertSeatReservation actualReservation = concertSeatReservationRepository.findById(
+        concertSeatReservation.getId()).orElse(null);
+
     Assertions.assertEquals(ReservationStatus.CANCELED,
-        concertSeatReservation.getReservationStatus());
+        actualReservation.getReservationStatus());
 
     ConcertSeat actualConcertSeat = concertSeatRepository.findById(concertSeat.getId())
         .orElse(null);
