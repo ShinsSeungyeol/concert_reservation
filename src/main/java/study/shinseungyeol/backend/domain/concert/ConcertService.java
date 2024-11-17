@@ -84,6 +84,19 @@ public class ConcertService {
     concertSeat.occupied();
   }
 
+
+  /**
+   * 레디스를 분산락을 이용한 좌석 점유 처리
+   *
+   * @param concertSeatId
+   */
+  public void convertToConcertSeatToOccupiedUsingRedis(Long concertSeatId) {
+    ConcertSeat concertSeat = concertSeatRepository.findById(concertSeatId)
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEAT));
+
+    concertSeat.occupied();
+  }
+
   /**
    * 콘서트 좌석 사용 가능 처리
    *

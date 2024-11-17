@@ -1,4 +1,4 @@
-package study.shinseungyeol.common;
+package study.shinseungyeol.backend.common;
 
 import lombok.NoArgsConstructor;
 import org.springframework.expression.ExpressionParser;

@@ -1,4 +1,4 @@
-package study.shinseungyeol.common;
+package study.shinseungyeol.backend.common;
 
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
