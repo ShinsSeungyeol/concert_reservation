@@ -134,7 +134,7 @@ class ContentSeatReservationUseCaseTest {
   @DisplayName("여러명의 사용자가 한 좌석을 예약 하려고 할 때, 한명만 예약 성공해야 한다")
   public void 좌석_예약_동시성_테스트() throws InterruptedException {
 
-    final int TRY_COUNT = 10;
+    final int TRY_COUNT = 10000;
 
     ExecutorService executorService = Executors.newFixedThreadPool(10);
     CountDownLatch latch = new CountDownLatch(TRY_COUNT);

@@ -13,6 +13,8 @@ import study.shinseungyeol.backend.domain.token.Token;
 import study.shinseungyeol.backend.domain.token.TokenService;
 import study.shinseungyeol.backend.usecase.reservation.dto.ReserveConcertSeat;
 import study.shinseungyeol.backend.usecase.reservation.dto.ReserveConcertSeat.CommandResult;
+import study.shinseungyeol.backend.usecase.reservation.event.ConcertSeatReservedEvent;
+import study.shinseungyeol.backend.usecase.reservation.event.ConcertSeatReservedEventPublisher;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class ContentSeatReservationUseCase {
   private final TokenService tokenService;
   private final ConcertSeatReservationService concertSeatReservationService;
   private final ConcertService concertService;
+  private final ConcertSeatReservedEventPublisher concertSeatReservedEventPublisher;
 
 
   /**
@@ -32,12 +35,16 @@ public class ContentSeatReservationUseCase {
   public CommandResult reserveConcert(ReserveConcertSeat.Command command) {
     Token token = tokenService.getToken(command.getUuid());
 
-    concertService.convertToConcertSeatToOccupiedUsingRedis(command.getConcertSeatId());
+    concertService.convertConcertSeatToOccupied(command.getConcertSeatId());
     tokenService.convertToInactiveToken(command.getUuid());
 
     ConcertSeatReservation concertSeatReservation = concertSeatReservationService.createConcertSeatReservation(
         token.getMemberId(),
         command.getConcertSeatId());
+
+    concertSeatReservedEventPublisher.raise(
+        new ConcertSeatReservedEvent(concertSeatReservation.getMemberId(),
+            concertSeatReservation.getConcertSeatId(), concertSeatReservation.getId()));
 
     return ReserveConcertSeat.CommandResult.of(concertSeatReservation);
   }

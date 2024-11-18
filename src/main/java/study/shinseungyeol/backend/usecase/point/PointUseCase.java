@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import study.shinseungyeol.backend.common.DistributedLock;
 import study.shinseungyeol.backend.domain.concert.ConcertSeat;
 import study.shinseungyeol.backend.domain.concert.ConcertService;
 import study.shinseungyeol.backend.domain.point.Point;
@@ -18,7 +19,6 @@ import study.shinseungyeol.backend.usecase.point.dto.UsePoint;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
 public class PointUseCase {
 
   private final PointService pointService;
@@ -32,6 +32,7 @@ public class PointUseCase {
    * @param command
    * @return
    */
+  @DistributedLock(key = "#command.getUuid")
   public UsePoint.CommandResult usePoint(UsePoint.Command command) {
     Token token = tokenService.getToken(command.getUuid());
 
@@ -51,6 +52,7 @@ public class PointUseCase {
    * @param command
    * @return
    */
+  @DistributedLock(key = "#command.getUuid")
   public ChargePoint.CommandResult chargePoint(ChargePoint.Command command) {
     Token token = tokenService.getToken(command.getUuid());
 
@@ -64,6 +66,7 @@ public class PointUseCase {
    *
    * @param uuid
    */
+  @Transactional
   public GetPoint.QueryResult getPointAmount(UUID uuid) {
     Token token = tokenService.getToken(uuid);
 

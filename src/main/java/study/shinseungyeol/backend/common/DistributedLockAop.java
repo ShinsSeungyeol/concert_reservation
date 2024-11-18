@@ -25,7 +25,6 @@ public class DistributedLockAop {
 
   @Around("@annotation(study.shinseungyeol.backend.common.DistributedLock)")
   public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
-    System.out.println("DistributedLockAop.lock");
     MethodSignature signature = (MethodSignature) joinPoint.getSignature();
     Method method = signature.getMethod();
     DistributedLock distributedLock = method.getAnnotation(DistributedLock.class);
@@ -33,8 +32,6 @@ public class DistributedLockAop {
     String key =
         REDISSON_LOCK_PREFIX + CustomSpringELParser.getDynamicValue(signature.getParameterNames(),
             joinPoint.getArgs(), distributedLock.key());
-
-    System.out.println("key = " + key);
 
     RLock rLock = redissonClient.getLock(key);
 
